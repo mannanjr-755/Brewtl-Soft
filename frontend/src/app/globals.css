@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+:root,
+[data-theme="light"] {
+  --bg: #f4f4f5;
+  --bg-elevated: #ffffff;
+  --bg-card: #ffffff;
+  --bg-soft: #f4f4f5;
+  --bg-sidebar: #fafafa;
+  --border: #e4e4e7;
+  --border-strong: #d4d4d8;
+  --gold: #b8860b;
+  --gold-bright: #d4a017;
+  --gold-dim: #8a6a12;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-dim: #a1a1aa;
+  --danger: #ef4444;
+  --orange: #f97316;
+  --success: #16a34a;
+  --info: #2563eb;
+  --purple: #9333ea;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #050505;
+  --bg-elevated: #0e0e0e;
+  --bg-card: #141414;
+  --bg-soft: #1a1a1a;
+  --bg-sidebar: #0a0a0a;
+  --border: #2a2a2a;
+  --border-strong: #3a3a3a;
+  --gold: #d4a017;
+  --gold-bright: #f0c14b;
+  --gold-dim: #8a6a12;
+  --text: #f5f5f5;
+  --text-muted: #9ca3af;
+  --text-dim: #6b7280;
+  --danger: #ef4444;
+  --orange: #f97316;
+  --success: #22c55e;
+  --info: #3b82f6;
+  --purple: #a855f7;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dim);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s ease-out both;
+}
+
+@keyframes pulse-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(212, 160, 23, 0);
+  }
+}
+
+.pulse-gold {
+  animation: pulse-gold 2s infinite;
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 45%, var(--gold-dim) 100%);
+}
+
+.gold-text {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Shared surface helpers for theme-aware UI */
+.surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.surface-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.input-theme {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.input-theme::placeholder {
+  color: var(--text-dim);
+}
+
+.input-theme:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+/* Soft overrides for pages still using legacy dark hex utilities */
+[data-theme="light"] .bg-black,
+[data-theme="light"] .bg-\[\#050505\],
+[data-theme="light"] .bg-\[\#0a0a0a\],
+[data-theme="light"] .bg-\[\#0e0e0e\],
+[data-theme="light"] .bg-\[\#141414\],
+[data-theme="light"] .bg-\[\#0c0f14\] {
+  background-color: var(--bg-card) !important;
+}
+
+[data-theme="light"] .text-white {
+  color: var(--text) !important;
+}
+
+[data-theme="light"] .border-\[\#1c1c1c\],
+[data-theme="light"] .border-\[\#2a2a2a\],
+[data-theme="light"] .border-white\/10 {
+  border-color: var(--border) !important;
+}
+
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-black\/20 {
+  background-color: var(--bg-soft) !important;
+}
+
+[data-theme="light"] .text-\[\#a8a29e\],
+[data-theme="light"] .text-\[\#9ca3af\],
+[data-theme="light"] .text-\[\#78716c\],
+[data-theme="light"] .text-\[\#6b7280\],
+[data-theme="light"] .text-\[\#aaa\],
+[data-theme="light"] .text-\[\#888\],
+[data-theme="light"] .text-\[\#777\],
+[data-theme="light"] .text-\[\#666\] {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="light"] .text-\[\#d1d5db\],
+[data-theme="light"] .text-\[\#e5e7eb\],
+[data-theme="light"] .text-\[\#d6d3d1\] {
+  color: var(--text) !important;
+}
