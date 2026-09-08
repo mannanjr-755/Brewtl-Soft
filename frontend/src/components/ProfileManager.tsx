@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "@/components/ToastProvider";
 
 type Profile = {
   name: string;
@@ -18,7 +19,6 @@ type Profile = {
 export function ProfileManager() {
   const [form, setForm] = useState<Profile | null>(null);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dashboard/profile")
@@ -30,7 +30,6 @@ export function ProfileManager() {
     e.preventDefault();
     if (!form) return;
     setSaving(true);
-    setMessage(null);
     const res = await fetch("/api/dashboard/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -40,9 +39,9 @@ export function ProfileManager() {
     if (res.ok) {
       const data = await res.json();
       setForm(data.restaurant);
-      setMessage("Profile saved.");
+      toast.success("Profile saved.");
     } else {
-      setMessage("Could not save profile.");
+      toast.error("Could not save profile.");
     }
   }
 
@@ -84,7 +83,6 @@ export function ProfileManager() {
       <p className="mt-1 text-sm text-[#a8a29e]">
         This information appears on the customer menu page.
       </p>
-      {message && <p className="mt-2 text-sm text-[#f0c14b]">{message}</p>}
 
       <form onSubmit={onSave} className="mt-6 max-w-2xl space-y-4">
         {field("name", "Restaurant name")}

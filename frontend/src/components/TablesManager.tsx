@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "@/components/ToastProvider";
 
 type TableRow = {
   id: string;
@@ -13,7 +14,6 @@ export function TablesManager() {
   const [tables, setTables] = useState<TableRow[]>([]);
   const [slug, setSlug] = useState("");
   const [tableNumber, setTableNumber] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
   const [origin, setOrigin] = useState("");
 
   const load = useCallback(async () => {
@@ -37,7 +37,6 @@ export function TablesManager() {
 
   async function createTable(e: React.FormEvent) {
     e.preventDefault();
-    setMessage(null);
     const res = await fetch("/api/dashboard/tables", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -45,10 +44,10 @@ export function TablesManager() {
     });
     const data = await res.json();
     if (!res.ok) {
-      setMessage(data.error || "Could not create table.");
+      toast.error(data.error || "Could not create table.");
       return;
     }
-    setMessage(`Table ${data.table.tableNumber} created. URL: ${data.url}`);
+    toast.success(`Table ${data.table.tableNumber} created. URL: ${data.url}`);
     setTableNumber("");
     load();
   }
@@ -82,7 +81,6 @@ export function TablesManager() {
           Create table
         </button>
       </form>
-      {message && <p className="mt-3 text-sm text-[#e8c547]">{message}</p>}
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
         <table className="w-full min-w-[480px] text-left text-sm">

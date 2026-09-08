@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { format } from "date-fns";
 import { ShieldCheck } from "lucide-react";
+import { toast } from "@/components/ToastProvider";
 
 type StaffRow = {
   id: string;
@@ -19,7 +20,6 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
   const [staff, setStaff] = useState<StaffRow[]>([]);
   const [currentUserId, setCurrentUserId] = useState("");
   const [form, setForm] = useState(emptyForm);
-  const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +42,6 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
     e.preventDefault();
     if (!isAdmin) return;
     setBusy(true);
-    setMessage(null);
     const res = await fetch("/api/dashboard/staff", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -56,11 +55,11 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
     const data = await res.json();
     setBusy(false);
     if (res.ok) {
-      setMessage(`Staff member added.`);
+      toast.success(`Staff member added.`);
       setForm(emptyForm);
       load();
     } else {
-      setMessage(data.error || "Could not add staff member.");
+      toast.error(data.error || "Could not add staff member.");
     }
   }
 
@@ -72,7 +71,11 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
       body: JSON.stringify({ id, role }),
     });
     const data = await res.json();
-    setMessage(res.ok ? "Role updated." : data.error || "Update failed.");
+    if (res.ok) {
+      toast.success("Role updated.");
+    } else {
+      toast.error(data.error || "Update failed.");
+    }
     load();
   }
 
@@ -84,7 +87,11 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
       body: JSON.stringify({ id: s.id, active: !s.active }),
     });
     const data = await res.json();
-    setMessage(res.ok ? "Account status updated." : data.error || "Update failed.");
+    if (res.ok) {
+      toast.success("Account status updated.");
+    } else {
+      toast.error(data.error || "Update failed.");
+    }
     load();
   }
 
@@ -93,7 +100,11 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
     if (!confirm("Remove this staff member permanently?")) return;
     const res = await fetch(`/api/dashboard/staff?id=${id}`, { method: "DELETE" });
     const data = await res.json();
-    setMessage(res.ok ? "Staff member removed." : data.error || "Could not remove.");
+    if (res.ok) {
+      toast.success("Staff member removed.");
+    } else {
+      toast.error(data.error || "Could not remove.");
+    }
     load();
   }
 
@@ -114,7 +125,6 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
           )}
         </p>
       </div>
-      {message && <p className="text-sm text-[#e8c547]">{message}</p>}
 
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {isAdmin && (

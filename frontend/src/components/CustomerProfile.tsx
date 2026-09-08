@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
 import { formatMoney, STATUS_LABELS, type OrderStatus } from "@/lib/utils";
+import { toast } from "@/components/ToastProvider";
 
 type CustomerDetail = {
   id: string;
@@ -73,7 +74,6 @@ export function CustomerProfile() {
   const [editingNotes, setEditingNotes] = useState(false);
   const [notesValue, setNotesValue] = useState("");
   const [savingNotes, setSavingNotes] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [expandedItems, setExpandedItems] = useState<Record<string, OrderItem[]>>({});
 
@@ -111,8 +111,7 @@ export function CustomerProfile() {
           prev ? { ...prev, customer: { ...prev.customer, notes: notesValue.trim() || null } } : prev
         );
         setEditingNotes(false);
-        setNotice("Notes saved.");
-        setTimeout(() => setNotice(null), 2200);
+        toast.success("Notes saved.");
       }
     } finally {
       setSavingNotes(false);
@@ -148,12 +147,6 @@ export function CustomerProfile() {
 
   return (
     <div className="space-y-6">
-      {notice && (
-        <div className="fixed right-5 top-5 z-50 rounded-xl border border-[#22c55e]/50 bg-[#11251a] px-4 py-3 text-sm text-[#d1fae5] shadow-2xl shadow-[#22c55e]/10">
-          {notice}
-        </div>
-      )}
-
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-[#78716c]">
         <Link href="/dashboard/customers" className="hover:text-[#e8c547] transition">Customers</Link>

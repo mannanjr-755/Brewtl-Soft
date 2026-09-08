@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImagePlus } from "lucide-react";
 import { formatMoney } from "@/lib/utils";
+import { toast } from "@/components/ToastProvider";
 
 type MenuItem = {
   id: string;
@@ -33,7 +34,6 @@ export function MenuManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [itemForm, setItemForm] = useState(emptyItem);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<MenuItem | null>(null);
@@ -72,8 +72,7 @@ export function MenuManager() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: catToEdit.id, name: catEditName.trim() }),
       });
-      setMessage("Category renamed.");
-      setTimeout(() => setMessage(null), 2200);
+      toast.success("Category renamed.");
       load();
     } finally {
       setCatBusy(false);
@@ -85,8 +84,7 @@ export function MenuManager() {
     setCatBusy(true);
     try {
       await fetch(`/api/dashboard/categories?id=${id}`, { method: "DELETE" });
-      setMessage("Category deleted.");
-      setTimeout(() => setMessage(null), 2200);
+      toast.success("Category deleted.");
       load();
     } finally {
       setCatBusy(false);
@@ -112,14 +110,14 @@ export function MenuManager() {
         body: JSON.stringify({ id: editingItem.id, ...payload }),
       });
       setEditingItem(null);
-      setMessage("Item updated.");
+      toast.success("Item updated.");
     } else {
       await fetch("/api/dashboard/items", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      setMessage("Item created.");
+      toast.success("Item created.");
     }
 
     setItemForm((f) => ({ ...emptyItem, categoryId: f.categoryId }));
@@ -139,8 +137,7 @@ export function MenuManager() {
     setDeleting(true);
     try {
       await fetch(`/api/dashboard/items?id=${id}`, { method: "DELETE" });
-      setMessage("Item deleted.");
-      setTimeout(() => setMessage(null), 2200);
+      toast.success("Item deleted.");
       load();
     } finally {
       setDeleting(false);
@@ -168,20 +165,19 @@ export function MenuManager() {
     if (!file) return;
 
     setUploading(true);
-    setMessage(null);
     try {
       const body = new FormData();
       body.append("file", file);
       const res = await fetch("/api/dashboard/upload", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {
-        setMessage(data.error || "Image upload failed.");
+        toast.error(data.error || "Image upload failed.");
         return;
       }
       setItemForm((f) => ({ ...f, imageUrl: data.url }));
-      setMessage("Image uploaded.");
+      toast.success("Image uploaded.");
     } catch {
-      setMessage("Image upload failed.");
+      toast.error("Image upload failed.");
     } finally {
       setUploading(false);
     }
@@ -343,7 +339,6 @@ export function MenuManager() {
           Manage menu items. Changes appear on the customer menu automatically.
           Unavailable items are hidden from customers. Use Categories in the sidebar to organize groups.
         </p>
-        {message && <p className="mt-2 text-sm text-[var(--gold-bright)]">{message}</p>}
       </div>
 
       {/* Item form */}

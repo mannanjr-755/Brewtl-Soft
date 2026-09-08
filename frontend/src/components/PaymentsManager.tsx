@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { formatMoney } from "@/lib/utils";
+import { toast } from "@/components/ToastProvider";
 
 const METHODS = ["CASH", "CARD", "BANK_TRANSFER", "MOBILE_WALLET", "OTHER"] as const;
 const STATUSES = ["PENDING", "PAID", "REFUNDED", "FAILED"] as const;
@@ -47,7 +48,6 @@ export function PaymentsManager() {
   const [payments, setPayments] = useState<PaymentRow[]>([]);
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [form, setForm] = useState(emptyForm);
-  const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -82,7 +82,6 @@ export function PaymentsManager() {
   async function createPayment(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setMessage(null);
     const res = await fetch("/api/dashboard/payments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -98,11 +97,11 @@ export function PaymentsManager() {
     const data = await res.json();
     setBusy(false);
     if (res.ok) {
-      setMessage("Payment recorded.");
+      toast.success("Payment recorded.");
       setForm(emptyForm);
       load();
     } else {
-      setMessage(data.error || "Could not record payment.");
+      toast.error(data.error || "Could not record payment.");
     }
   }
 
@@ -113,14 +112,18 @@ export function PaymentsManager() {
       body: JSON.stringify({ id: payment.id, status }),
     });
     const data = await res.json();
-    setMessage(res.ok ? "Payment updated." : data.error || "Update failed.");
+    if (res.ok) {
+      toast.success("Payment updated.");
+    } else {
+      toast.error(data.error || "Update failed.");
+    }
     load();
   }
 
   async function removePayment(id: string) {
     if (!confirm("Delete this payment record?")) return;
     await fetch(`/api/dashboard/payments?id=${id}`, { method: "DELETE" });
-    setMessage("Payment deleted.");
+    toast.success("Payment deleted.");
     load();
   }
 
@@ -151,8 +154,6 @@ export function PaymentsManager() {
           <p className="mt-1 text-2xl font-semibold text-[#f0c14b]">{formatMoney(outstanding)}</p>
         </div>
       </div>
-
-      {message && <p className="text-sm text-[#e8c547]">{message}</p>}
 
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* Record payment */}

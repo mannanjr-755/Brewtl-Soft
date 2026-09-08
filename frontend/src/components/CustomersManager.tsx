@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { formatMoney } from "@/lib/utils";
+import { toast } from "@/components/ToastProvider";
 
 type CustomerRow = {
   id: string;
@@ -48,7 +49,6 @@ export function CustomersManager() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<CustomerRow | null>(null);
@@ -84,7 +84,6 @@ export function CustomersManager() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    setMessage(null);
     const payload = {
       name: form.name.trim(),
       phone: form.phone.trim() || null,
@@ -98,19 +97,18 @@ export function CustomersManager() {
     });
     setBusy(false);
     if (res.ok) {
-      setMessage(editing ? "Customer updated." : "Customer added.");
+      toast.success(editing ? "Customer updated." : "Customer added.");
       setEditing(null);
       setForm(emptyForm);
       load();
     } else {
       const data = await res.json();
-      setMessage(data.error || "Something went wrong.");
+      toast.error(data.error || "Something went wrong.");
     }
   }
 
   async function syncFromOrders() {
     setBusy(true);
-    setMessage(null);
     const res = await fetch("/api/dashboard/customers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -119,12 +117,12 @@ export function CustomersManager() {
     const data = await res.json();
     setBusy(false);
     if (res.ok) {
-      setMessage(
+      toast.success(
         `Synced from orders — created ${data.synced?.created ?? 0} customers, linked ${data.synced?.linked ?? 0} orders.`
       );
       load();
     } else {
-      setMessage(data.error || "Sync failed.");
+      toast.error(data.error || "Sync failed.");
     }
   }
 
@@ -134,8 +132,7 @@ export function CustomersManager() {
     try {
       const res = await fetch(`/api/dashboard/customers?id=${deleteTarget.id}`, { method: "DELETE" });
       if (res.ok) {
-        setMessage("Customer deleted.");
-        setTimeout(() => setMessage(null), 2200);
+        toast.success("Customer deleted.");
         load();
       }
     } finally {
@@ -213,12 +210,6 @@ export function CustomersManager() {
           </button>
         </div>
       </div>
-
-      {message && (
-        <div className="rounded-xl border border-[#22c55e]/30 bg-[#22c55e]/10 px-4 py-2.5 text-sm text-[#22c55e]">
-          {message}
-        </div>
-      )}
 
       <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* Add / edit form */}

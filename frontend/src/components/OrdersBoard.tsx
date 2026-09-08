@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { Pencil, Printer, Search } from "lucide-react";
 import { printOrderReceipt, type ReceiptRestaurant } from "@/lib/printReceipt";
+import { toast } from "@/components/ToastProvider";
 import { formatMoney, nextStatus, ORDER_STATUSES, STATUS_LABELS, type OrderStatus } from "@/lib/utils";
 
 type OrderItem = {
@@ -72,13 +73,11 @@ export function OrdersBoard() {
   const [search, setSearch] = useState("");
   const [lastFetch, setLastFetch] = useState("");
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
-  const [deleteNotice, setDeleteNotice] = useState<string | null>(null);
   const [orderToEdit, setOrderToEdit] = useState<Order | null>(null);
   const [menuCategories, setMenuCategories] = useState<{ id: string; name: string; items: { id: string; name: string; price: number; available: boolean }[] }[]>([]);
   const [editCategory, setEditCategory] = useState("");
   const [editQty, setEditQty] = useState<Record<string, number>>({});
   const [editBusy, setEditBusy] = useState(false);
-  const [editNotice, setEditNotice] = useState<string | null>(null);
   const [orderTypeFilter, setOrderTypeFilter] = useState<"ALL" | "DINE_IN" | "TAKE_AWAY">("ALL");
   const [searchOpen, setSearchOpen] = useState(false);
   const [restaurantInfo, setRestaurantInfo] = useState<ReceiptRestaurant | null>(null);
@@ -283,8 +282,7 @@ export function OrdersBoard() {
         setOrders((prev) =>
           prev.map((o) => (o.id === order.id ? (data.order as Order) : o))
         );
-        setDeleteNotice(`Order ${order.orderNumber} saved to Reports.`);
-        setTimeout(() => setDeleteNotice(null), 2200);
+        toast.success(`Order ${order.orderNumber} saved to Reports.`);
       }
     } finally {
       setUpdatingId(null);
@@ -303,8 +301,7 @@ export function OrdersBoard() {
 
       if (res.ok) {
         setOrders((prev) => prev.filter((order) => order.id !== orderId));
-        setDeleteNotice(`Order ${orderToDelete.orderNumber} deleted.`);
-        setTimeout(() => setDeleteNotice(null), 2200);
+        toast.success(`Order ${orderToDelete.orderNumber} deleted.`);
       }
     } finally {
       setDeletingId(null);
@@ -317,7 +314,6 @@ export function OrdersBoard() {
     setEditCategory("");
     setEditQty({});
     setEditBusy(false);
-    setEditNotice(null);
     if (menuCategories.length === 0) {
       try {
         const res = await fetch("/api/dashboard/categories", { cache: "no-store" });
@@ -348,8 +344,7 @@ export function OrdersBoard() {
         setOrders((prev) => prev.map((o) => (o.id === orderToEdit.id ? data.order : o)));
         setOrderToEdit(data.order);
         setEditQty((prev) => ({ ...prev, [menuItemId]: 1 }));
-        setEditNotice("Item added");
-        setTimeout(() => setEditNotice(null), 1500);
+        toast.success("Item added");
       }
     } finally {
       setEditBusy(false);
@@ -369,8 +364,7 @@ export function OrdersBoard() {
         const data = await res.json();
         setOrders((prev) => prev.map((o) => (o.id === orderToEdit.id ? data.order : o)));
         setOrderToEdit(data.order);
-        setEditNotice("Item removed");
-        setTimeout(() => setEditNotice(null), 1500);
+        toast.success("Item removed");
       }
     } finally {
       setEditBusy(false);
@@ -446,12 +440,6 @@ export function OrdersBoard() {
 
   return (
     <div className="space-y-6">
-      {deleteNotice && (
-        <div className="fixed right-5 top-5 z-50 rounded-xl border border-[#22c55e]/50 bg-[#11251a] px-4 py-3 text-sm text-[#d1fae5] shadow-2xl shadow-[#22c55e]/10">
-          {deleteNotice}
-        </div>
-      )}
-
       {orderToDelete && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl border border-[#2a2a2a] bg-[#141414] p-5 shadow-2xl shadow-black/50">
@@ -512,9 +500,6 @@ export function OrdersBoard() {
                 </h3>
               </div>
               <div className="flex items-center gap-3">
-                {editNotice && (
-                  <span className="rounded-full bg-[#22c55e]/15 px-3 py-1 text-xs font-medium text-[#22c55e]">{editNotice}</span>
-                )}
                 <button
                   type="button"
                   onClick={() => setOrderToEdit(null)}

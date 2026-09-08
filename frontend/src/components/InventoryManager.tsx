@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Minus, Plus, AlertTriangle } from "lucide-react";
 import { formatMoney } from "@/lib/utils";
+import { toast } from "@/components/ToastProvider";
 
 type InventoryItem = {
   id: string;
@@ -19,7 +20,6 @@ export function InventoryManager() {
   const [drafts, setDrafts] = useState<Record<string, { qty: number | null; threshold: number }>>(
     {}
   );
-  const [message, setMessage] = useState<string | null>(null);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "low">("all");
@@ -47,7 +47,6 @@ export function InventoryManager() {
   async function save(item: InventoryItem) {
     const d = draft(item);
     setSavingId(item.id);
-    setMessage(null);
     const res = await fetch("/api/dashboard/inventory", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -55,7 +54,7 @@ export function InventoryManager() {
     });
     setSavingId(null);
     if (res.ok) {
-      setMessage(`Saved ${item.name}.`);
+      toast.success(`Saved ${item.name}.`);
       const data = await res.json();
       setItems((prev) => prev.map((i) => (i.id === item.id ? data.item : i)));
       setDrafts((prev) => {
@@ -65,7 +64,7 @@ export function InventoryManager() {
       });
     } else {
       const data = await res.json();
-      setMessage(data.error || "Save failed.");
+      toast.error(data.error || "Save failed.");
     }
   }
 
@@ -113,8 +112,6 @@ export function InventoryManager() {
           <p className="mt-1 text-2xl font-semibold text-[#f0c14b]">{formatMoney(totalValue)}</p>
         </div>
       </div>
-
-      {message && <p className="text-sm text-[#e8c547]">{message}</p>}
 
       <div className="flex gap-2">
         <button

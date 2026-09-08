@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { toast } from "@/components/ToastProvider";
 
 type Category = {
   id: string;
@@ -15,7 +16,6 @@ export function CategoriesManager() {
   const [newName, setNewName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
-  const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -46,7 +46,7 @@ export function CategoriesManager() {
     });
     if (res.ok) {
       setNewName("");
-      setMessage("Category created.");
+      toast.success("Category created.");
       load();
     }
   }
@@ -58,7 +58,7 @@ export function CategoriesManager() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, name: editingName.trim() }),
       });
-      setMessage("Category renamed.");
+      toast.success("Category renamed.");
     }
     setEditingId(null);
     load();
@@ -67,7 +67,7 @@ export function CategoriesManager() {
   async function removeCategory(id: string) {
     if (!confirm("Delete this category and its items?")) return;
     await fetch(`/api/dashboard/categories?id=${id}`, { method: "DELETE" });
-    setMessage("Category deleted.");
+    toast.success("Category deleted.");
     load();
   }
 
@@ -104,7 +104,6 @@ export function CategoriesManager() {
           Organise your menu. The order here controls how categories appear on the customer menu.
         </p>
       </div>
-      {message && <p className="text-sm text-[#e8c547]">{message}</p>}
 
       <form onSubmit={createCategory} className="flex flex-wrap gap-2">
         <input
