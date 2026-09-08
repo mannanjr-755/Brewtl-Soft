@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Bell, ClipboardList, Phone, Check } from "lucide-react";
+import { toast } from "@/components/ToastProvider";
 
 type TableRequest = {
   id: string;
@@ -12,11 +13,26 @@ type TableRequest = {
   createdAt: string;
 };
 
+function requestToastMessage(r: TableRequest) {
+  const kind =
+    r.type === "WAITER"
+      ? "Call Waiter"
+      : r.type === "BILL"
+        ? "Request Bill"
+        : r.type;
+  const detail = (r.message || "").trim();
+  if (detail && detail.toLowerCase() !== kind.toLowerCase()) {
+    return `Table ${r.tableNumber}: ${detail}`;
+  }
+  return `Table ${r.tableNumber}: ${kind}`;
+}
+
 export function TableRequestsPanel({ className = "" }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const [requests, setRequests] = useState<TableRequest[]>([]);
   const [ackingId, setAckingId] = useState<string | null>(null);
   const knownIds = useRef<Set<string>>(new Set());
+  const primed = useRef(false);
   const [hasNew, setHasNew] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -32,10 +48,20 @@ export function TableRequestsPanel({ className = "" }: { className?: string }) {
       const items: TableRequest[] = data.requests ?? [];
       setRequests(items);
 
+      // First poll: remember existing requests without toasting.
+      if (!primed.current) {
+        for (const item of items) {
+          knownIds.current.add(item.id);
+        }
+        primed.current = true;
+        return;
+      }
+
       for (const item of items) {
         if (!knownIds.current.has(item.id)) {
           knownIds.current.add(item.id);
           setHasNew(true);
+          toast.info(requestToastMessage(item));
         }
       }
     } catch {
@@ -132,7 +158,7 @@ export function TableRequestsPanel({ className = "" }: { className?: string }) {
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium leading-snug text-[var(--text)] break-words">
+                    <p className="break-words text-sm font-medium leading-snug text-[var(--text)]">
                       {r.message}
                     </p>
                     <p className="mt-1 text-[10px] text-[var(--text-dim)]">
