@@ -206,7 +206,7 @@ async function main() {
   for (const cat of categories) {
     const category = await prisma.menuCategory.create({
       data: {
-        restaurantId: bella.id,
+        restaurantId: bonPanier.id,
         name: cat.name,
         sortOrder: sort++,
       },
@@ -214,7 +214,7 @@ async function main() {
     for (const item of cat.items) {
       await prisma.menuItem.create({
         data: {
-          restaurantId: bella.id,
+          restaurantId: bonPanier.id,
           categoryId: category.id,
           name: item.name,
           description: item.description,
