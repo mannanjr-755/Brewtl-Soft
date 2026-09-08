@@ -98,15 +98,21 @@ export async function GET(request: Request) {
     .map(([name, v]) => ({ name, ...v }))
     .sort((a, b) => b.revenue - a.revenue);
 
-  const recentOrders = orders.slice(0, 50).map((o) => ({
+  const recentOrders = orders.map((o) => ({
     id: o.id,
     orderNumber: o.orderNumber,
     customerName: o.customerName,
-    tableNumber: o.table.tableNumber,
+    tableNumber: o.customerName === "Walking Customer" ? null : o.table.tableNumber,
     status: o.status,
     total: o.total,
     createdAt: o.createdAt,
     itemCount: o.items.reduce((sum, i) => sum + i.quantity, 0),
+    items: o.items.map((i) => ({
+      itemName: i.itemName,
+      quantity: i.quantity,
+      unitPrice: i.unitPrice,
+      subtotal: i.subtotal,
+    })),
   }));
 
   return NextResponse.json({

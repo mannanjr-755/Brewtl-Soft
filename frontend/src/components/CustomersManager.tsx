@@ -20,17 +20,6 @@ type CustomerRow = {
   segment: string;
 };
 
-type Analytics = {
-  totalCustomers: number;
-  returningCustomers: number;
-  newCustomers: number;
-  activeCustomers: number;
-  inactiveCustomers: number;
-  totalRevenue: number;
-  avgSpending: number;
-  avgOrdersPerCustomer: number;
-};
-
 type SegmentCounts = {
   all: number;
   NEW: number;
@@ -50,7 +39,6 @@ const SEGMENT_STYLES: Record<string, { label: string; color: string; bg: string 
 
 export function CustomersManager() {
   const [customers, setCustomers] = useState<CustomerRow[]>([]);
-  const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [segments, setSegments] = useState<SegmentCounts | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [editing, setEditing] = useState<CustomerRow | null>(null);
@@ -78,7 +66,6 @@ export function CustomersManager() {
     const res = await fetch(`/api/dashboard/customers?${params.toString()}`);
     const data = await res.json();
     setCustomers(data.customers ?? []);
-    setAnalytics(data.analytics ?? null);
     setSegments(data.segments ?? null);
     setTotalPages(data.pagination?.totalPages ?? 1);
     setLoading(false);
@@ -230,30 +217,6 @@ export function CustomersManager() {
       {message && (
         <div className="rounded-xl border border-[#22c55e]/30 bg-[#22c55e]/10 px-4 py-2.5 text-sm text-[#22c55e]">
           {message}
-        </div>
-      )}
-
-      {/* Analytics cards */}
-      {analytics && (
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {[
-            { label: "Total Customers", value: String(analytics.totalCustomers), icon: "👥", tone: "text-[#e8c547] bg-[#d4a017]/15" },
-            { label: "Total Revenue", value: formatMoney(analytics.totalRevenue), icon: "💰", tone: "text-[#22c55e] bg-[#22c55e]/15" },
-            { label: "Avg Spending", value: formatMoney(analytics.avgSpending), icon: "📊", tone: "text-[#3b82f6] bg-[#3b82f6]/15" },
-            { label: "Avg Orders/Customer", value: analytics.avgOrdersPerCustomer.toFixed(1), icon: "📋", tone: "text-[#a855f7] bg-[#a855f7]/15" },
-          ].map((card) => (
-            <div key={card.label} className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-4">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-xs text-[#9ca3af]">{card.label}</p>
-                  <p className="mt-1 text-2xl font-semibold text-white">{card.value}</p>
-                </div>
-                <span className={`flex h-11 w-11 items-center justify-center rounded-full text-lg ${card.tone}`}>
-                  {card.icon}
-                </span>
-              </div>
-            </div>
-          ))}
         </div>
       )}
 

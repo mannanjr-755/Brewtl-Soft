@@ -23,11 +23,12 @@ type ReportData = {
     id: string;
     orderNumber: string;
     customerName: string;
-    tableNumber: number;
+    tableNumber: number | null;
     status: string;
     total: number;
     createdAt: string;
     itemCount: number;
+    items: { itemName: string; quantity: number; unitPrice: number; subtotal: number }[];
   }[];
 };
 
@@ -40,17 +41,25 @@ const STATUS_COLOR: Record<string, string> = {
   REPORTED: "#6366f1",
 };
 
-const PIN_SESSION_KEY = "crm-reports-unlocked";
-
 function toInput(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
     date.getDate()
   ).padStart(2, "0")}`;
 }
 
+function formatOrderItems(
+  items: { itemName: string; quantity: number; unitPrice: number; subtotal: number }[]
+) {
+  return items.map((i) => `${i.itemName} x${i.quantity}`).join("; ");
+}
+
+function tableLabel(customerName: string, tableNumber: number | null) {
+  if (customerName === "Walking Customer" || tableNumber == null) return "N/A";
+  return String(tableNumber);
+}
+
 export function ReportsManager() {
   const [unlocked, setUnlocked] = useState(false);
-  const [pinReady, setPinReady] = useState(false);
   const [pin, setPin] = useState("");
   const [pinError, setPinError] = useState<string | null>(null);
   const [pinBusy, setPinBusy] = useState(false);
@@ -65,15 +74,21 @@ export function ReportsManager() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Always require PIN when entering Reports; clear any prior unlock flag.
+    try {
+      sessionStorage.removeItem("crm-reports-unlocked");
+    } catch {
+      /* ignore */
+    }
+    setUnlocked(false);
+    return () => {
+      setUnlocked(false);
       try {
-        setUnlocked(sessionStorage.getItem(PIN_SESSION_KEY) === "1");
+        sessionStorage.removeItem("crm-reports-unlocked");
       } catch {
         /* ignore */
       }
-      setPinReady(true);
-    }, 0);
-    return () => clearTimeout(timer);
+    };
   }, []);
 
   const load = useCallback(async () => {
@@ -108,11 +123,6 @@ export function ReportsManager() {
         setPinError(payload.error || "Incorrect PIN");
         return;
       }
-      try {
-        sessionStorage.setItem(PIN_SESSION_KEY, "1");
-      } catch {
-        /* ignore */
-      }
       setUnlocked(true);
       setPin("");
     } catch {
@@ -126,66 +136,17 @@ export function ReportsManager() {
     if (!data) return;
 
     const wb = XLSX.utils.book_new();
-
-    const summarySheet = XLSX.utils.json_to_sheet([
-      { Metric: "From", Value: data.from },
-      { Metric: "To", Value: data.to },
-      { Metric: "Revenue", Value: data.summary.revenue },
-      { Metric: "Orders", Value: data.summary.totalOrders },
-      { Metric: "Completed", Value: data.summary.completedOrders },
-      { Metric: "Average order value", Value: data.summary.averageOrderValue },
-    ]);
-    XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
-
-    const dailySheet = XLSX.utils.json_to_sheet(
-      data.daily.map((d) => ({
-        Date: d.date,
-        Orders: d.orders,
-        Revenue: d.revenue,
-      }))
-    );
-    XLSX.utils.book_append_sheet(wb, dailySheet, "Daily");
-
-    const statusSheet = XLSX.utils.json_to_sheet(
-      data.ordersByStatus.map((s) => ({
-        Status: s.label,
-        Count: s.count,
-        Revenue: s.revenue,
-      }))
-    );
-    XLSX.utils.book_append_sheet(wb, statusSheet, "By Status");
-
-    const topItemsSheet = XLSX.utils.json_to_sheet(
-      data.topItems.map((t) => ({
-        Item: t.name,
-        Quantity: t.quantity,
-        Revenue: t.revenue,
-      }))
-    );
-    XLSX.utils.book_append_sheet(wb, topItemsSheet, "Top Items");
-
-    const categorySheet = XLSX.utils.json_to_sheet(
-      data.categoryBreakdown.map((c) => ({
-        Category: c.name,
-        Quantity: c.quantity,
-        Revenue: c.revenue,
-      }))
-    );
-    XLSX.utils.book_append_sheet(wb, categorySheet, "Categories");
-
     const ordersSheet = XLSX.utils.json_to_sheet(
       data.recentOrders.map((o) => ({
         Order: o.orderNumber,
         Customer: o.customerName,
-        Table: o.tableNumber,
+        Table: tableLabel(o.customerName, o.tableNumber),
         Status: STATUS_LABELS[o.status as OrderStatus] ?? o.status,
-        Items: o.itemCount,
+        Items: formatOrderItems(o.items ?? []),
         Total: o.total,
-        CreatedAt: o.createdAt,
       }))
     );
     XLSX.utils.book_append_sheet(wb, ordersSheet, "Orders");
-
     XLSX.writeFile(wb, `crm-reports-${data.from}-to-${data.to}.xlsx`);
   }
 
@@ -227,10 +188,6 @@ export function ReportsManager() {
     () => (data?.ordersByStatus ?? []).reduce((s, x) => s + x.count, 0),
     [data]
   );
-
-  if (!pinReady) {
-    return <p className="text-sm text-[var(--text-muted)]">Loading…</p>;
-  }
 
   if (!unlocked) {
     return (
@@ -494,7 +451,9 @@ export function ReportsManager() {
                   <tr key={o.id} className="border-b border-white/5">
                     <td className="px-4 py-3 font-medium text-white">{o.orderNumber}</td>
                     <td className="px-4 py-3 text-[#d6d3d1]">{o.customerName}</td>
-                    <td className="px-4 py-3 text-[#a8a29e]">{o.tableNumber}</td>
+                    <td className="px-4 py-3 text-[#a8a29e]">
+                      {tableLabel(o.customerName, o.tableNumber)}
+                    </td>
                     <td className="px-4 py-3">
                       <span className="inline-flex items-center gap-1.5 text-xs">
                         <span
