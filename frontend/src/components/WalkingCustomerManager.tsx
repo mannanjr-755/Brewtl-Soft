@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ImagePlus, Minus, Plus, Search, Trash2 } from "lucide-react";
+import { ImagePlus, Minus, Plus, Printer, Search, Trash2 } from "lucide-react";
+import { printOrderReceipt, type ReceiptRestaurant } from "@/lib/printReceipt";
 import { formatMoney } from "@/lib/utils";
 
 type MenuItem = {
@@ -26,7 +27,7 @@ type CartLine = {
   quantity: number;
 };
 
-/** Dedicated walking-customer POS — reuses existing menu API + kitchen order create. */
+/** Dedicated walking-customer POS — Save goes to Reports; Print prints receipt. */
 export function WalkingCustomerManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +35,7 @@ export function WalkingCustomerManager() {
   const [cart, setCart] = useState<CartLine[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [checkoutBusy, setCheckoutBusy] = useState(false);
+  const [restaurantInfo, setRestaurantInfo] = useState<ReceiptRestaurant | null>(null);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/dashboard/categories");
@@ -48,6 +50,29 @@ export function WalkingCustomerManager() {
     }, 0);
     return () => clearTimeout(timer);
   }, [load]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/dashboard/profile", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled && data.restaurant) {
+          setRestaurantInfo({
+            name: data.restaurant.name,
+            phone: data.restaurant.phone,
+            address: data.restaurant.address,
+          });
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const availableItems = useMemo(
     () => categories.flatMap((cat) => cat.items.filter((i) => i.available)),
@@ -98,32 +123,99 @@ export function WalkingCustomerManager() {
     setCart((prev) => prev.filter((line) => line.item.id !== itemId));
   }
 
-  async function saveOrderToKitchen() {
+  /** Create walking order as REPORTED (Reports only — not Kitchen). */
+  async function createReportsOrder() {
+    const res = await fetch("/api/dashboard/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        walkingCustomer: true,
+        saveToReports: true,
+        items: cart.map((line) => ({
+          menuItemId: line.item.id,
+          quantity: line.quantity,
+        })),
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Could not create walking-customer order.");
+    }
+    return data as {
+      order: {
+        orderNumber: string;
+        customerName: string;
+        orderType?: string;
+        total: number;
+        createdAt: string;
+        status: string;
+        items: { itemName: string; quantity: number; unitPrice: number; subtotal: number }[];
+        table?: { tableNumber: number } | null;
+      };
+      restaurant: ReceiptRestaurant;
+    };
+  }
+
+  async function saveOrderToReports() {
     if (cart.length === 0 || checkoutBusy) return;
     setCheckoutBusy(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/dashboard/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          walkingCustomer: true,
-          items: cart.map((line) => ({
-            menuItemId: line.item.id,
-            quantity: line.quantity,
-          })),
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setMessage(data.error || "Could not create walking-customer order.");
-        return;
-      }
+      const data = await createReportsOrder();
       setCart([]);
-      setMessage(`Order ${data.order.orderNumber} sent to Kitchen Orders.`);
+      setMessage(`Order ${data.order.orderNumber} saved to Reports.`);
       setTimeout(() => setMessage(null), 3000);
+    } catch (e) {
+      setMessage(e instanceof Error ? e.message : "Could not create walking-customer order.");
+    } finally {
+      setCheckoutBusy(false);
+    }
+  }
+
+  async function printCartReceipt() {
+    if (cart.length === 0 || checkoutBusy) return;
+    setCheckoutBusy(true);
+    setMessage(null);
+    try {
+      let restaurant = restaurantInfo;
+      if (!restaurant) {
+        const res = await fetch("/api/dashboard/profile", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.restaurant) {
+            restaurant = {
+              name: data.restaurant.name,
+              phone: data.restaurant.phone,
+              address: data.restaurant.address,
+            };
+            setRestaurantInfo(restaurant);
+          }
+        }
+      }
+
+      const items = cart.map((line) => ({
+        itemName: line.item.name,
+        quantity: line.quantity,
+        unitPrice: line.item.price,
+        subtotal: line.item.price * line.quantity,
+      }));
+
+      printOrderReceipt(
+        {
+          orderNumber: `WC-${Date.now().toString(36).toUpperCase()}`,
+          customerName: "Walking Customer",
+          orderType: "TAKE_AWAY",
+          total: cartTotal,
+          createdAt: new Date(),
+          items,
+          table: null,
+        },
+        restaurant ?? undefined
+      );
+      setMessage("Receipt sent to printer.");
+      setTimeout(() => setMessage(null), 2500);
     } catch {
-      setMessage("Could not create walking-customer order.");
+      setMessage("Could not print walking-customer receipt.");
     } finally {
       setCheckoutBusy(false);
     }
@@ -138,7 +230,7 @@ export function WalkingCustomerManager() {
       <div>
         <h1 className="font-display text-2xl text-[var(--text)] sm:text-3xl">Walking Customer</h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Search the menu, add items to Current Order, then Save to send it to Kitchen Orders.
+          Search the menu, add items to Current Order, then Save to Reports or Print Receipt.
         </p>
       </div>
 
@@ -263,10 +355,19 @@ export function WalkingCustomerManager() {
           <button
             type="button"
             disabled={cart.length === 0 || checkoutBusy}
-            onClick={() => void saveOrderToKitchen()}
+            onClick={() => void saveOrderToReports()}
             className="mt-4 w-full rounded-xl bg-[var(--gold)] py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:brightness-110 disabled:opacity-50"
           >
             {checkoutBusy ? "Saving…" : "Save"}
+          </button>
+          <button
+            type="button"
+            disabled={cart.length === 0 || checkoutBusy}
+            onClick={() => void printCartReceipt()}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-soft)] py-3 text-sm font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)] disabled:opacity-50"
+          >
+            <Printer className="h-4 w-4" />
+            {checkoutBusy ? "Printing…" : "Print Receipt"}
           </button>
         </aside>
       </div>

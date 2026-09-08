@@ -94,6 +94,8 @@ export async function POST(request: Request) {
     }
 
     const orderNumber = await generateOrderNumber(restaurant.id, restaurant.slug);
+    // saveToReports: create as REPORTED so it appears in Reports only (not Kitchen).
+    const saveToReports = body.saveToReports === true;
 
     const order = await prisma.order.create({
       data: {
@@ -102,7 +104,7 @@ export async function POST(request: Request) {
         orderNumber,
         customerName: "Walking Customer",
         orderType: "TAKE_AWAY",
-        status: "NEW",
+        status: saveToReports ? "REPORTED" : "NEW",
         total,
         items: {
           create: orderItems,

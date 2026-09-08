@@ -981,6 +981,15 @@ export function OrdersBoard() {
                                 <Printer className="h-3 w-3" />
                                 Print Receipt
                               </button>
+                              <button
+                                type="button"
+                                disabled={deletingId === order.id || updatingId === order.id}
+                                onClick={() => openEditOrder(order)}
+                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--gold)]/50 bg-[var(--gold)]/10 py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--gold-bright)] transition hover:bg-[var(--gold)]/20 disabled:opacity-50"
+                              >
+                                <Pencil className="h-3 w-3" />
+                                Edit Order
+                              </button>
                             </>
                           )}
                           {(order.status === "NEW" ||
