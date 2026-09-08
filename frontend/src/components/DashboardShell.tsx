@@ -23,7 +23,7 @@ export async function DashboardShell({
   const session = await auth();
   const userName = session?.user.name || "Admin";
   const roleLabel = session?.user.role === "ADMIN" ? "Administrator" : "Staff";
-  const restaurantName = session?.user.restaurantName || "Bella Cucina";
+  const restaurantName = session?.user.restaurantName || "BON PANIER";
   void newOrderCount;
   void preparingCount;
 

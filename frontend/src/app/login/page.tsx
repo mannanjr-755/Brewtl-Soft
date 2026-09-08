@@ -26,9 +26,9 @@ export default function LoginPage() {
           <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#d4a017] text-[#d4a017]">
             <UtensilsCrossed className="h-7 w-7" />
           </div>
-          <span className="font-display mt-3 text-3xl text-[#e8c547]">Bella Cucina</span>
+          <span className="font-display mt-3 text-3xl text-[#e8c547]">BON PANIER</span>
           <span className="mt-1 text-xs uppercase tracking-[0.25em] text-[#777]">
-            Staff login · Restaurant
+            The French Bakery Cafe & Store
           </span>
         </Link>
 
@@ -45,7 +45,7 @@ export default function LoginPage() {
           </div>
 
           <p className="mt-6 rounded-xl border border-[#d4a017]/20 bg-[#d4a017]/5 p-3 text-xs leading-relaxed text-[#9ca3af]">
-            Demo: <span className="text-[#e8c547]">admin@bellacucina.com</span> /{" "}
+            Demo: <span className="text-[#e8c547]">admin@bonpanier.com</span> /{" "}
             <span className="text-[#e8c547]">password123</span>
           </p>
         </div>

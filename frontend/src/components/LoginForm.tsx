@@ -49,7 +49,7 @@ export function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={inputClass}
-          placeholder="admin@bellacucina.com"
+          placeholder="admin@bonpanier.com"
         />
       </label>
       <label className="block text-sm">
