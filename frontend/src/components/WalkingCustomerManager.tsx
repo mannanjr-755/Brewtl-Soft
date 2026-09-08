@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ImagePlus, Minus, Plus, Printer, Search, Trash2 } from "lucide-react";
-import { printOrderReceipt } from "@/lib/printReceipt";
+import { ImagePlus, Minus, Plus, Search, Trash2 } from "lucide-react";
 import { formatMoney } from "@/lib/utils";
 
 type MenuItem = {
@@ -27,7 +26,7 @@ type CartLine = {
   quantity: number;
 };
 
-/** Dedicated walking-customer POS — reuses existing menu API + order create + receipt print. */
+/** Dedicated walking-customer POS — reuses existing menu API + kitchen order create. */
 export function WalkingCustomerManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,7 +98,7 @@ export function WalkingCustomerManager() {
     setCart((prev) => prev.filter((line) => line.item.id !== itemId));
   }
 
-  async function printCartReceipt() {
+  async function saveOrderToKitchen() {
     if (cart.length === 0 || checkoutBusy) return;
     setCheckoutBusy(true);
     setMessage(null);
@@ -120,9 +119,8 @@ export function WalkingCustomerManager() {
         setMessage(data.error || "Could not create walking-customer order.");
         return;
       }
-      printOrderReceipt(data.order, data.restaurant);
       setCart([]);
-      setMessage(`Receipt printed for order ${data.order.orderNumber}.`);
+      setMessage(`Order ${data.order.orderNumber} sent to Kitchen Orders.`);
       setTimeout(() => setMessage(null), 3000);
     } catch {
       setMessage("Could not create walking-customer order.");
@@ -140,7 +138,7 @@ export function WalkingCustomerManager() {
       <div>
         <h1 className="font-display text-2xl text-[var(--text)] sm:text-3xl">Walking Customer</h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Search the menu, add items to the order, then print the receipt. Does not use table ordering.
+          Search the menu, add items to Current Order, then Save to send it to Kitchen Orders.
         </p>
       </div>
 
@@ -203,7 +201,7 @@ export function WalkingCustomerManager() {
         </section>
 
         <aside className="rounded-2xl border border-[var(--border)] bg-[var(--bg-elevated)] p-4 sm:p-5 xl:sticky xl:top-4 xl:self-start">
-          <h2 className="font-medium text-[var(--text)]">Current order</h2>
+          <h2 className="font-medium text-[var(--text)]">Current Order</h2>
           <p className="mt-1 text-xs text-[var(--text-muted)]">
             {cart.length === 0 ? "Add items from the menu." : `${cart.length} line(s) in cart`}
           </p>
@@ -265,11 +263,10 @@ export function WalkingCustomerManager() {
           <button
             type="button"
             disabled={cart.length === 0 || checkoutBusy}
-            onClick={() => void printCartReceipt()}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--gold)] py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:brightness-110 disabled:opacity-50"
+            onClick={() => void saveOrderToKitchen()}
+            className="mt-4 w-full rounded-xl bg-[var(--gold)] py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:brightness-110 disabled:opacity-50"
           >
-            <Printer className="h-4 w-4" />
-            {checkoutBusy ? "Printing…" : "Print Receipt"}
+            {checkoutBusy ? "Saving…" : "Save"}
           </button>
         </aside>
       </div>

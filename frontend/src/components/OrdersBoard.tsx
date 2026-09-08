@@ -463,7 +463,11 @@ export function OrdersBoard() {
             <div className="mt-4 rounded-xl border border-[#2a2a2a] bg-[#0e0e0e] p-3 text-sm text-[#d1d5db]">
               <div className="flex items-center justify-between gap-3">
                 <span className="text-[#9ca3af]">Table</span>
-                <span>{orderToDelete.table.tableNumber}</span>
+                <span>
+                  {orderToDelete.customerName === "Walking Customer"
+                    ? "—"
+                    : orderToDelete.table.tableNumber}
+                </span>
               </div>
               <div className="mt-2 flex items-center justify-between gap-3">
                 <span className="text-[#9ca3af]">Total</span>
@@ -500,7 +504,11 @@ export function OrdersBoard() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d4a017]">Edit Order</p>
                 <h3 className="text-lg font-semibold text-white">
                   {orderToEdit.orderNumber}
-                  <span className="ml-2 text-sm font-normal text-[#9ca3af]">Table {orderToEdit.table.tableNumber}</span>
+                  {orderToEdit.customerName !== "Walking Customer" && (
+                    <span className="ml-2 text-sm font-normal text-[#9ca3af]">
+                      Table {orderToEdit.table.tableNumber}
+                    </span>
+                  )}
                 </h3>
               </div>
               <div className="flex items-center gap-3">
@@ -718,7 +726,9 @@ export function OrdersBoard() {
                         <div className="min-w-0">
                           <p className="truncate text-sm text-white">{o.orderNumber}</p>
                           <p className="truncate text-[11px] text-[#9ca3af]">
-                            {o.customerName} · Table {o.table.tableNumber}
+                            {o.customerName === "Walking Customer"
+                              ? o.customerName
+                              : `${o.customerName} · Table ${o.table.tableNumber}`}
                           </p>
                         </div>
                         <span className="shrink-0 rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-[#9ca3af]">
@@ -862,6 +872,7 @@ export function OrdersBoard() {
                     {colOrders.map((order) => {
                       const nxt = nextStatus(order.status);
                       const isNew = order.status === "NEW";
+                      const isWalkingCustomer = order.customerName === "Walking Customer";
                       const initials = order.customerName
                         .split(/\s+/)
                         .filter(Boolean)
@@ -881,7 +892,11 @@ export function OrdersBoard() {
                             <div className="min-w-0">
                               <p className="truncate font-semibold text-[var(--text)]">{order.orderNumber}</p>
                               <p className="mt-0.5 truncate text-xs text-[var(--text-muted)]">
-                                Table {order.table.tableNumber} · {order.orderType === "TAKE_AWAY" ? "Take Away" : "Dine In"}
+                                {isWalkingCustomer
+                                  ? order.orderType === "TAKE_AWAY"
+                                    ? "Take Away"
+                                    : "Dine In"
+                                  : `Table ${order.table.tableNumber} · ${order.orderType === "TAKE_AWAY" ? "Take Away" : "Dine In"}`}
                               </p>
                             </div>
                             <span className="shrink-0 rounded-md bg-[var(--bg-soft)] px-1.5 py-0.5 text-[10px] tabular-nums text-[var(--text-muted)]">

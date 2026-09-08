@@ -86,7 +86,11 @@ export function buildReceiptHtml(order: ReceiptOrder, restaurant?: ReceiptRestau
       ${created.toLocaleString()}<br/>
       ${escapeHtml(order.customerName)}
       ${typeLabel ? ` · ${escapeHtml(typeLabel)}` : ""}
-      ${order.table ? ` · Table ${order.table.tableNumber}` : ""}
+      ${
+        order.customerName !== "Walking Customer" && order.table
+          ? ` · Table ${order.table.tableNumber}`
+          : ""
+      }
     </div>
     <div class="line"></div>
     <table>
