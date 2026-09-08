@@ -426,13 +426,6 @@ export function OrdersBoard() {
       tone: "text-[#a855f7] bg-[#a855f7]/15",
       trend: "↑ 18% from yesterday",
     },
-    {
-      label: "Total Revenue",
-      value: formatMoney(revenue),
-      icon: "💰",
-      tone: "text-[#e8c547] bg-[#d4a017]/15",
-      trend: "↑ 22% from yesterday",
-    },
   ];
 
   const newBucket = (counts.NEW ?? 0) + (counts.ACCEPTED ?? 0);
@@ -785,7 +778,7 @@ export function OrdersBoard() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {kpi.map((card) => (
           <div
             key={card.label}
@@ -956,14 +949,24 @@ export function OrdersBoard() {
                               </button>
                             )}
                           {order.status === "COMPLETED" && (
-                            <button
-                              type="button"
-                              disabled={updatingId === order.id || deletingId === order.id}
-                              onClick={() => saveOrderToReports(order)}
-                              className="mt-3 w-full rounded-lg bg-[#3b82f6] py-2 text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#60a5fa] disabled:opacity-50"
-                            >
-                              {updatingId === order.id ? "Saving…" : "Save"}
-                            </button>
+                            <>
+                              <button
+                                type="button"
+                                disabled={updatingId === order.id || deletingId === order.id}
+                                onClick={() => saveOrderToReports(order)}
+                                className="mt-3 w-full rounded-lg bg-[#3b82f6] py-2 text-xs font-bold uppercase tracking-wide text-white transition hover:bg-[#60a5fa] disabled:opacity-50"
+                              >
+                                {updatingId === order.id ? "Saving…" : "Save"}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handlePrintReceipt(order)}
+                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)]"
+                              >
+                                <Printer className="h-3 w-3" />
+                                Print Receipt
+                              </button>
+                            </>
                           )}
                           {(order.status === "NEW" ||
                             order.status === "ACCEPTED" ||

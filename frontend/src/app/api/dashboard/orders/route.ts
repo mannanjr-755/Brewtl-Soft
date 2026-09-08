@@ -5,7 +5,8 @@ import { requireStaff } from "@/lib/session";
 import { nextStatus, ORDER_STATUSES } from "@/lib/utils";
 
 /**
- * Create a walking-customer order from an existing menu item.
+ * Create a walking-customer order from existing menu item(s).
+ * Supports single item `{ menuItemId, quantity }` or cart `{ items: [{ menuItemId, quantity }] }`.
  * Uses existing order/item pricing fields — does not alter table-based order flow.
  */
 export async function POST(request: Request) {
@@ -16,8 +17,6 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const menuItemId = typeof body.menuItemId === "string" ? body.menuItemId : "";
-    const quantity = Math.max(1, Math.floor(Number(body.quantity) || 1));
     const walkingCustomer = body.walkingCustomer === true;
 
     if (!walkingCustomer) {
@@ -26,7 +25,26 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
-    if (!menuItemId) {
+
+    type LineInput = { menuItemId: string; quantity: number };
+    let lines: LineInput[] = [];
+
+    if (Array.isArray(body.items) && body.items.length > 0) {
+      lines = body.items
+        .map((row: { menuItemId?: unknown; quantity?: unknown }) => ({
+          menuItemId: typeof row.menuItemId === "string" ? row.menuItemId : "",
+          quantity: Math.max(1, Math.floor(Number(row.quantity) || 1)),
+        }))
+        .filter((row: LineInput) => row.menuItemId);
+    } else {
+      const menuItemId = typeof body.menuItemId === "string" ? body.menuItemId : "";
+      const quantity = Math.max(1, Math.floor(Number(body.quantity) || 1));
+      if (menuItemId) {
+        lines = [{ menuItemId, quantity }];
+      }
+    }
+
+    if (lines.length === 0) {
       return NextResponse.json({ error: "menuItemId required" }, { status: 400 });
     }
 
@@ -38,16 +56,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Restaurant not found" }, { status: 404 });
     }
 
-    const menuItem = await prisma.menuItem.findFirst({
+    const menuItems = await prisma.menuItem.findMany({
       where: {
-        id: menuItemId,
+        id: { in: lines.map((l) => l.menuItemId) },
         restaurantId: restaurant.id,
         available: true,
       },
     });
-    if (!menuItem) {
+    if (menuItems.length !== new Set(lines.map((l) => l.menuItemId)).size) {
       return NextResponse.json({ error: "Menu item not found or unavailable" }, { status: 404 });
     }
+
+    const byId = new Map(menuItems.map((m) => [m.id, m]));
+    const orderItems = lines.map((line) => {
+      const menuItem = byId.get(line.menuItemId)!;
+      const unitPrice = menuItem.price;
+      const subtotal = line.quantity * unitPrice;
+      return {
+        menuItemId: menuItem.id,
+        itemName: menuItem.name,
+        quantity: line.quantity,
+        unitPrice,
+        subtotal,
+      };
+    });
+    const total = orderItems.reduce((sum, i) => sum + i.subtotal, 0);
 
     const table = await prisma.table.findFirst({
       where: { restaurantId: restaurant.id },
@@ -60,8 +93,6 @@ export async function POST(request: Request) {
       );
     }
 
-    const unitPrice = menuItem.price;
-    const subtotal = quantity * unitPrice;
     const orderNumber = await generateOrderNumber(restaurant.id, restaurant.slug);
 
     const order = await prisma.order.create({
@@ -72,17 +103,9 @@ export async function POST(request: Request) {
         customerName: "Walking Customer",
         orderType: "TAKE_AWAY",
         status: "NEW",
-        total: subtotal,
+        total,
         items: {
-          create: [
-            {
-              menuItemId: menuItem.id,
-              itemName: menuItem.name,
-              quantity,
-              unitPrice,
-              subtotal,
-            },
-          ],
+          create: orderItems,
         },
       },
       include: { items: true, table: true },

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
-import { FileSpreadsheet } from "lucide-react";
+import { FileSpreadsheet, Lock } from "lucide-react";
 import * as XLSX from "xlsx";
 import { formatMoney, STATUS_LABELS, ORDER_STATUSES, type OrderStatus } from "@/lib/utils";
 
@@ -40,6 +40,8 @@ const STATUS_COLOR: Record<string, string> = {
   REPORTED: "#6366f1",
 };
 
+const PIN_SESSION_KEY = "crm-reports-unlocked";
+
 function toInput(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
     date.getDate()
@@ -47,6 +49,12 @@ function toInput(date: Date) {
 }
 
 export function ReportsManager() {
+  const [unlocked, setUnlocked] = useState(false);
+  const [pinReady, setPinReady] = useState(false);
+  const [pin, setPin] = useState("");
+  const [pinError, setPinError] = useState<string | null>(null);
+  const [pinBusy, setPinBusy] = useState(false);
+
   const [from, setFrom] = useState(() => {
     const d = new Date();
     d.setDate(d.getDate() - 6);
@@ -54,11 +62,19 @@ export function ReportsManager() {
   });
   const [to, setTo] = useState(() => toInput(new Date()));
   const [data, setData] = useState<ReportData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [importing, setImporting] = useState(false);
-  const [importMessage, setImportMessage] = useState<string | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        setUnlocked(sessionStorage.getItem(PIN_SESSION_KEY) === "1");
+      } catch {
+        /* ignore */
+      }
+      setPinReady(true);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -70,11 +86,108 @@ export function ReportsManager() {
   }, [from, to]);
 
   useEffect(() => {
+    if (!unlocked) return;
     const timer = setTimeout(() => {
       load();
     }, 0);
     return () => clearTimeout(timer);
-  }, [load]);
+  }, [load, unlocked]);
+
+  async function submitPin(e: React.FormEvent) {
+    e.preventDefault();
+    setPinError(null);
+    setPinBusy(true);
+    try {
+      const res = await fetch("/api/dashboard/reports/verify-pin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin }),
+      });
+      const payload = await res.json();
+      if (!res.ok) {
+        setPinError(payload.error || "Incorrect PIN");
+        return;
+      }
+      try {
+        sessionStorage.setItem(PIN_SESSION_KEY, "1");
+      } catch {
+        /* ignore */
+      }
+      setUnlocked(true);
+      setPin("");
+    } catch {
+      setPinError("Could not verify PIN.");
+    } finally {
+      setPinBusy(false);
+    }
+  }
+
+  function exportExcel() {
+    if (!data) return;
+
+    const wb = XLSX.utils.book_new();
+
+    const summarySheet = XLSX.utils.json_to_sheet([
+      { Metric: "From", Value: data.from },
+      { Metric: "To", Value: data.to },
+      { Metric: "Revenue", Value: data.summary.revenue },
+      { Metric: "Orders", Value: data.summary.totalOrders },
+      { Metric: "Completed", Value: data.summary.completedOrders },
+      { Metric: "Average order value", Value: data.summary.averageOrderValue },
+    ]);
+    XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+
+    const dailySheet = XLSX.utils.json_to_sheet(
+      data.daily.map((d) => ({
+        Date: d.date,
+        Orders: d.orders,
+        Revenue: d.revenue,
+      }))
+    );
+    XLSX.utils.book_append_sheet(wb, dailySheet, "Daily");
+
+    const statusSheet = XLSX.utils.json_to_sheet(
+      data.ordersByStatus.map((s) => ({
+        Status: s.label,
+        Count: s.count,
+        Revenue: s.revenue,
+      }))
+    );
+    XLSX.utils.book_append_sheet(wb, statusSheet, "By Status");
+
+    const topItemsSheet = XLSX.utils.json_to_sheet(
+      data.topItems.map((t) => ({
+        Item: t.name,
+        Quantity: t.quantity,
+        Revenue: t.revenue,
+      }))
+    );
+    XLSX.utils.book_append_sheet(wb, topItemsSheet, "Top Items");
+
+    const categorySheet = XLSX.utils.json_to_sheet(
+      data.categoryBreakdown.map((c) => ({
+        Category: c.name,
+        Quantity: c.quantity,
+        Revenue: c.revenue,
+      }))
+    );
+    XLSX.utils.book_append_sheet(wb, categorySheet, "Categories");
+
+    const ordersSheet = XLSX.utils.json_to_sheet(
+      data.recentOrders.map((o) => ({
+        Order: o.orderNumber,
+        Customer: o.customerName,
+        Table: o.tableNumber,
+        Status: STATUS_LABELS[o.status as OrderStatus] ?? o.status,
+        Items: o.itemCount,
+        Total: o.total,
+        CreatedAt: o.createdAt,
+      }))
+    );
+    XLSX.utils.book_append_sheet(wb, ordersSheet, "Orders");
+
+    XLSX.writeFile(wb, `crm-reports-${data.from}-to-${data.to}.xlsx`);
+  }
 
   const presets = [
     {
@@ -115,61 +228,51 @@ export function ReportsManager() {
     [data]
   );
 
-  async function onImportFile(file: File) {
-    setImportError(null);
-    setImportMessage(null);
+  if (!pinReady) {
+    return <p className="text-sm text-[var(--text-muted)]">Loading…</p>;
+  }
 
-    const lower = file.name.toLowerCase();
-    if (!lower.endsWith(".xlsx") && !lower.endsWith(".xls") && !lower.endsWith(".csv")) {
-      setImportError("Please select an Excel file (.xlsx, .xls) or CSV (.csv).");
-      return;
-    }
-    if (file.size === 0) {
-      setImportError("The selected file is empty.");
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setImportError("File must be under 5MB.");
-      return;
-    }
-
-    setImporting(true);
-    try {
-      const buffer = await file.arrayBuffer();
-      const workbook = XLSX.read(buffer, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
-      if (!sheetName) {
-        setImportError("Workbook has no sheets.");
-        return;
-      }
-      const sheet = workbook.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: "" });
-      if (!rows.length) {
-        setImportError("No data rows found in the Excel file.");
-        return;
-      }
-
-      const res = await fetch("/api/dashboard/reports/import", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rows }),
-      });
-      const payload = await res.json();
-      if (!res.ok) {
-        setImportError(payload.error || "Import failed.");
-        return;
-      }
-
-      setImportMessage(
-        `Imported ${payload.paymentsCreated} payment(s) and ${payload.customersCreated} customer(s). Skipped ${payload.skipped}.`
-      );
-      await load();
-    } catch (e) {
-      setImportError(e instanceof Error ? e.message : "Could not read Excel file.");
-    } finally {
-      setImporting(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+  if (!unlocked) {
+    return (
+      <div className="mx-auto flex min-h-[50vh] max-w-md flex-col items-center justify-center space-y-6 text-center">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[var(--gold)]/40 bg-[var(--gold)]/10 text-[var(--gold-bright)]">
+          <Lock className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--text)]">Enter your PIN</h1>
+          <p className="mt-2 text-sm text-[var(--text-muted)]">
+            Reports are protected. Enter your PIN to continue.
+          </p>
+        </div>
+        <form onSubmit={submitPin} className="w-full space-y-3 text-left">
+          <label className="block text-sm">
+            <span className="mb-1.5 block text-[var(--text-muted)]">PIN</span>
+            <input
+              type="password"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
+              className="input-theme w-full rounded-xl px-4 py-3 text-sm tracking-[0.3em]"
+              placeholder="••••"
+              required
+            />
+          </label>
+          {pinError && (
+            <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+              {pinError}
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={pinBusy || !pin.trim()}
+            className="w-full rounded-xl bg-[var(--gold)] py-3 text-sm font-bold uppercase tracking-wider text-black disabled:opacity-60"
+          >
+            {pinBusy ? "Checking…" : "Unlock Reports"}
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -180,28 +283,16 @@ export function ReportsManager() {
           <p className="mt-1 text-sm text-[var(--text-muted)]">
             Sales, orders, and menu performance for the selected period.
           </p>
-          {importMessage && <p className="mt-2 text-sm text-[var(--success)]">{importMessage}</p>}
-          {importError && <p className="mt-2 text-sm text-[var(--danger)]">{importError}</p>}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) void onImportFile(file);
-            }}
-          />
           <button
             type="button"
-            disabled={importing}
-            onClick={() => fileInputRef.current?.click()}
+            disabled={!data || loading}
+            onClick={exportExcel}
             className="inline-flex items-center gap-2 rounded-xl border border-[var(--gold)]/50 bg-[var(--gold)]/10 px-3 py-2 text-sm font-semibold text-[var(--gold-bright)] transition hover:bg-[var(--gold)]/20 disabled:opacity-50"
           >
             <FileSpreadsheet className="h-4 w-4" />
-            {importing ? "Importing…" : "Import Excel File"}
+            Export Excel
           </button>
           <div className="flex gap-1 rounded-xl border border-[var(--border)] bg-[var(--bg-soft)] p-1 text-xs">
             {presets.map((p) => (
@@ -254,7 +345,6 @@ export function ReportsManager() {
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-            {/* Daily revenue */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Revenue by day</h2>
               <div className="mt-4 flex h-40 items-end gap-1">
@@ -276,7 +366,6 @@ export function ReportsManager() {
               </p>
             </section>
 
-            {/* Status breakdown */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Orders by status</h2>
               <ul className="mt-4 space-y-3">
@@ -312,7 +401,6 @@ export function ReportsManager() {
           </div>
 
           <div className="grid gap-6 xl:grid-cols-2">
-            {/* Top items */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Top selling items</h2>
               {data.topItems.length === 0 ? (
@@ -346,7 +434,6 @@ export function ReportsManager() {
               )}
             </section>
 
-            {/* Category breakdown */}
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Revenue by category</h2>
               {data.categoryBreakdown.length === 0 ? (
@@ -380,7 +467,6 @@ export function ReportsManager() {
             </section>
           </div>
 
-          {/* Recent orders */}
           <section className="overflow-x-auto rounded-2xl border border-white/10">
             <h2 className="border-b border-white/10 bg-white/[0.03] px-5 py-3 font-medium text-white">
               Orders in period
