@@ -8,7 +8,6 @@ import {
   UtensilsCrossed,
   Tags,
   Users,
-  UserCog,
   BarChart3,
   Package,
   Footprints,
@@ -36,19 +35,18 @@ const STORAGE_KEY = "crm-sidebar-collapsed";
 
 const nav: { href: string; label: string; icon: LucideIcon; key: string }[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, key: "orders" },
-  { href: "/dashboard/tables", label: "Tables", icon: Table2, key: "tables" },
-  { href: "/dashboard/menu", label: "Menu", icon: UtensilsCrossed, key: "menu" },
-  { href: "/dashboard/categories", label: "Categories", icon: Tags, key: "categories" },
-  { href: "/dashboard/customers", label: "Customers", icon: Users, key: "customers" },
-  { href: "/dashboard/staff", label: "Staff", icon: UserCog, key: "staff" },
-  { href: "/dashboard/reports", label: "Reports", icon: BarChart3, key: "reports" },
-  { href: "/dashboard/inventory", label: "Inventory", icon: Package, key: "inventory" },
   {
     href: "/dashboard/walking-customer",
     label: "Walking Customer",
     icon: Footprints,
     key: "walking-customer",
   },
+  { href: "/dashboard/tables", label: "Tables", icon: Table2, key: "tables" },
+  { href: "/dashboard/menu", label: "Menu", icon: UtensilsCrossed, key: "menu" },
+  { href: "/dashboard/categories", label: "Categories", icon: Tags, key: "categories" },
+  { href: "/dashboard/customers", label: "Customers", icon: Users, key: "customers" },
+  { href: "/dashboard/reports", label: "Reports", icon: BarChart3, key: "reports" },
+  { href: "/dashboard/inventory", label: "Inventory", icon: Package, key: "inventory" },
 ];
 
 function isNavActive(active: NavKey, key: string) {
