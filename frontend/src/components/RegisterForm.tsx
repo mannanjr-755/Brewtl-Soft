@@ -63,7 +63,7 @@ export function RegisterForm() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none placeholder:text-[#6b7280] focus:border-[#d4a017] focus:ring-1 focus:ring-[#d4a017]/40";
+    "w-full rounded-xl border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none placeholder:text-[#6b7280] focus:border-[#9a5f53] focus:ring-1 focus:ring-[#9a5f53]/40";
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -136,14 +136,14 @@ export function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-[#d4a017] py-3.5 text-sm font-bold uppercase tracking-wider text-black disabled:opacity-60"
+        className="w-full rounded-md bg-[#9a5f53] py-3.5 text-sm font-bold uppercase tracking-wider text-[#f5f1e6] disabled:opacity-60"
       >
         {loading ? "Creating…" : "Create restaurant"}
       </button>
 
       <p className="text-center text-sm text-[#9ca3af]">
         Already have an account?{" "}
-        <Link href="/login" className="text-[#e8c547] hover:underline">
+        <Link href="/login" className="text-[#d4a99a] hover:underline">
           Sign in
         </Link>
       </p>

@@ -109,7 +109,7 @@ export function InventoryManager() {
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <p className="text-xs text-[#a8a29e]">Stock value</p>
-          <p className="mt-1 text-2xl font-semibold text-[#f0c14b]">{formatMoney(totalValue)}</p>
+          <p className="mt-1 text-2xl font-semibold text-[#e8c4b8]">{formatMoney(totalValue)}</p>
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export function InventoryManager() {
           onClick={() => setFilter("all")}
           className={`rounded-lg px-3 py-1.5 text-xs ${
             filter === "all"
-              ? "bg-[#d4a017]/20 text-[#e8c547] ring-1 ring-[#d4a017]/40"
+              ? "bg-[#9a5f53]/20 text-[#d4a99a] ring-1 ring-[#9a5f53]/40"
               : "border border-white/10 text-[#a8a29e]"
           }`}
         >
@@ -202,7 +202,7 @@ export function InventoryManager() {
                             },
                           }))
                         }
-                        className="w-16 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#d4a017] disabled:opacity-40"
+                        className="w-16 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#9a5f53] disabled:opacity-40"
                       />
                       <button
                         type="button"
@@ -234,7 +234,7 @@ export function InventoryManager() {
                             },
                           }))
                         }
-                        className="w-14 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#d4a017]"
+                        className="w-14 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#9a5f53]"
                       />
                     </div>
 
@@ -247,7 +247,7 @@ export function InventoryManager() {
                             [item.id]: { ...draft(item), qty: 0 },
                           }))
                         }
-                        className="rounded-lg border border-[#d4a017]/50 bg-[#d4a017]/10 px-2.5 py-1.5 text-xs font-semibold text-[#e8c547]"
+                        className="rounded-lg border border-[#9a5f53]/50 bg-[#9a5f53]/10 px-2.5 py-1.5 text-xs font-semibold text-[#d4a99a]"
                       >
                         Start tracking
                       </button>
@@ -266,7 +266,7 @@ export function InventoryManager() {
                       type="button"
                       disabled={savingId === item.id}
                       onClick={() => save(item)}
-                      className="rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+                      className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
                     >
                       {savingId === item.id ? "Saving…" : "Save"}
                     </button>

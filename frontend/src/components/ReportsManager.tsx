@@ -308,7 +308,7 @@ export function ReportsManager() {
                 {data.daily.map((d) => (
                   <div key={d.date} className="group flex flex-1 flex-col items-center gap-1">
                     <div
-                      className="w-full rounded-t bg-gradient-to-t from-[#d4a017]/30 to-[#f0c14b]"
+                      className="w-full rounded-t bg-gradient-to-t from-[#9a5f53]/30 to-[#e8c4b8]"
                       style={{ height: `${Math.max(2, (d.revenue / maxDailyRevenue) * 100)}%` }}
                       title={`${d.date}: ${formatMoney(d.revenue)}`}
                     />
@@ -318,7 +318,7 @@ export function ReportsManager() {
                   </div>
                 ))}
               </div>
-              <p className="mt-2 text-right text-sm font-semibold text-[#f0c14b]">
+              <p className="mt-2 text-right text-sm font-semibold text-[#e8c4b8]">
                 {formatMoney(data.summary.revenue)}
               </p>
             </section>
@@ -375,13 +375,13 @@ export function ReportsManager() {
                     {data.topItems.map((t, i) => (
                       <tr key={t.name} className="border-b border-white/5">
                         <td className="py-2.5 text-white">
-                          <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#d4a017]/15 text-[10px] font-bold text-[#f0c14b]">
+                          <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#9a5f53]/15 text-[10px] font-bold text-[#e8c4b8]">
                             {i + 1}
                           </span>
                           {t.name}
                         </td>
                         <td className="py-2.5 text-[#a8a29e]">{t.quantity}</td>
-                        <td className="py-2.5 text-right font-medium text-[#f0c14b]">
+                        <td className="py-2.5 text-right font-medium text-[#e8c4b8]">
                           {formatMoney(t.revenue)}
                         </td>
                       </tr>
@@ -412,7 +412,7 @@ export function ReportsManager() {
                         </div>
                         <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-[#d4a017] to-[#f0c14b]"
+                            className="h-full rounded-full bg-gradient-to-r from-[#9a5f53] to-[#e8c4b8]"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -464,7 +464,7 @@ export function ReportsManager() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-[#a8a29e]">{o.itemCount}</td>
-                    <td className="px-4 py-3 text-right font-medium text-[#f0c14b]">
+                    <td className="px-4 py-3 text-right font-medium text-[#e8c4b8]">
                       {formatMoney(o.total)}
                     </td>
                   </tr>

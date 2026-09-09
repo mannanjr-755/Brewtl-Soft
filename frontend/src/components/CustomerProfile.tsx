@@ -52,7 +52,7 @@ type FavItem = { name: string; quantity: number; revenue: number };
 const SEGMENT_STYLES: Record<string, { label: string; color: string; bg: string; desc: string }> = {
   NEW: { label: "New Customer", color: "text-[#3b82f6]", bg: "bg-[#3b82f6]/15", desc: "Just started ordering" },
   REGULAR: { label: "Regular Customer", color: "text-[#22c55e]", bg: "bg-[#22c55e]/15", desc: "Multiple completed orders" },
-  VIP: { label: "VIP Customer", color: "text-[#e8c547]", bg: "bg-[#d4a017]/15", desc: "High spending / frequent ordering" },
+  VIP: { label: "VIP Customer", color: "text-[#d4a99a]", bg: "bg-[#9a5f53]/15", desc: "High spending / frequent ordering" },
   INACTIVE: { label: "Inactive", color: "text-[#ef4444]", bg: "bg-[#ef4444]/15", desc: "No order in 60+ days" },
 };
 
@@ -149,14 +149,14 @@ export function CustomerProfile() {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs text-[#78716c]">
-        <Link href="/dashboard/customers" className="hover:text-[#e8c547] transition">Customers</Link>
+        <Link href="/dashboard/customers" className="hover:text-[#d4a99a] transition">Customers</Link>
         <span>/</span>
         <span className="text-[#9ca3af]">{customer.name}</span>
       </div>
 
       {/* Customer header */}
       <div className="flex flex-wrap items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#d4a017]/15 text-2xl font-bold text-[#e8c547]">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-2xl font-bold text-[#d4a99a]">
           {customer.name.slice(0, 1).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
@@ -184,7 +184,7 @@ export function CustomerProfile() {
       {/* Stats cards */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {[
-          { label: "Total Orders", value: String(stats.totalOrders), icon: "📋", tone: "text-[#e8c547] bg-[#d4a017]/15" },
+          { label: "Total Orders", value: String(stats.totalOrders), icon: "📋", tone: "text-[#d4a99a] bg-[#9a5f53]/15" },
           { label: "Total Spent", value: formatMoney(stats.totalSpent), icon: "💰", tone: "text-[#22c55e] bg-[#22c55e]/15" },
           { label: "Avg Order Value", value: formatMoney(stats.avgOrderValue), icon: "📊", tone: "text-[#3b82f6] bg-[#3b82f6]/15" },
           { label: "First Order", value: stats.firstOrderAt ? format(new Date(stats.firstOrderAt), "dd MMM yy") : "—", icon: "🎂", tone: "text-[#a855f7] bg-[#a855f7]/15" },
@@ -218,7 +218,7 @@ export function CustomerProfile() {
               {recentActivity.map((o) => (
                 <div key={o.id}>
                   <div
-                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0e0e0e] px-4 py-3 transition hover:border-[#d4a017]/30 cursor-pointer"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0e0e0e] px-4 py-3 transition hover:border-[#9a5f53]/30 cursor-pointer"
                     onClick={() => toggleOrderItems(o.id)}
                   >
                     <div className="flex items-center gap-3">
@@ -239,7 +239,7 @@ export function CustomerProfile() {
                       }`}>
                         {STATUS_LABELS[o.status as OrderStatus] ?? o.status}
                       </span>
-                      <span className="text-sm font-semibold text-[#f0c14b]">{formatMoney(o.total)}</span>
+                      <span className="text-sm font-semibold text-[#e8c4b8]">{formatMoney(o.total)}</span>
                     </div>
                   </div>
                   {expandedOrder === o.id && expandedItems[o.id] && (
@@ -249,7 +249,7 @@ export function CustomerProfile() {
                           <span className="text-[#d1d5db]">
                             <span className="text-[#9ca3af]">{item.quantity}×</span> {item.itemName}
                           </span>
-                          <span className="text-[#f0c14b]">{formatMoney(item.subtotal)}</span>
+                          <span className="text-[#e8c4b8]">{formatMoney(item.subtotal)}</span>
                         </div>
                       ))}
                     </div>
@@ -271,7 +271,7 @@ export function CustomerProfile() {
               <ul className="mt-3 space-y-2.5">
                 {favoriteItems.map((item, idx) => (
                   <li key={item.name} className="flex items-center gap-3 text-sm">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#d4a017]/15 text-[10px] font-bold text-[#f0c14b]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-[10px] font-bold text-[#e8c4b8]">
                       {idx + 1}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-[#d1d5db]">{item.name}</span>
@@ -290,7 +290,7 @@ export function CustomerProfile() {
                 <button
                   type="button"
                   onClick={() => { setEditingNotes(true); setNotesValue(customer.notes ?? ""); }}
-                  className="text-xs text-[#d4a017] hover:text-[#e8c547] transition"
+                  className="text-xs text-[#9a5f53] hover:text-[#d4a99a] transition"
                 >
                   Edit
                 </button>
@@ -304,14 +304,14 @@ export function CustomerProfile() {
                   onChange={(e) => setNotesValue(e.target.value)}
                   rows={4}
                   placeholder="e.g. Prefers less spicy food, usually orders family meal…"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#d4a017] resize-none"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#9a5f53] resize-none"
                 />
                 <div className="mt-2 flex gap-2">
                   <button
                     type="button"
                     disabled={savingNotes}
                     onClick={saveNotes}
-                    className="rounded-lg bg-[#d4a017] px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
+                    className="rounded-lg bg-[#9a5f53] px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
                   >
                     {savingNotes ? "Saving…" : "Save"}
                   </button>

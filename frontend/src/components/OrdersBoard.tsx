@@ -396,7 +396,7 @@ export function OrdersBoard() {
       label: "Total Orders",
       value: String(todayOrders.length),
       icon: "📋",
-      tone: "text-[#e8c547] bg-[#d4a017]/15",
+      tone: "text-[#d4a99a] bg-[#9a5f53]/15",
       trend: "↑ 25% from yesterday",
     },
     {
@@ -459,7 +459,7 @@ export function OrdersBoard() {
               </div>
               <div className="mt-2 flex items-center justify-between gap-3">
                 <span className="text-[#9ca3af]">Total</span>
-                <span className="font-semibold text-[#f0c14b]">{formatMoney(orderToDelete.total)}</span>
+                <span className="font-semibold text-[#e8c4b8]">{formatMoney(orderToDelete.total)}</span>
               </div>
             </div>
             <div className="mt-5 flex gap-3">
@@ -489,7 +489,7 @@ export function OrdersBoard() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-[#2a2a2a] px-5 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d4a017]">Edit Order</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a5f53]">Edit Order</p>
                 <h3 className="text-lg font-semibold text-white">
                   {orderToEdit.orderNumber}
                   {orderToEdit.customerName !== "Walking Customer" && (
@@ -537,7 +537,7 @@ export function OrdersBoard() {
                           type="button"
                           disabled={editBusy}
                           onClick={() => updateOrderItemQty(item.id, item.quantity - 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#d4a017] hover:text-[#e8c547] disabled:opacity-50"
+                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
                         >
                           −
                         </button>
@@ -546,7 +546,7 @@ export function OrdersBoard() {
                           type="button"
                           disabled={editBusy}
                           onClick={() => updateOrderItemQty(item.id, item.quantity + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#d4a017] hover:text-[#e8c547] disabled:opacity-50"
+                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
                         >
                           +
                         </button>
@@ -559,7 +559,7 @@ export function OrdersBoard() {
                           ×
                         </button>
                       </div>
-                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[#f0c14b]">
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[#e8c4b8]">
                         {formatMoney(item.subtotal)}
                       </span>
                     </div>
@@ -567,7 +567,7 @@ export function OrdersBoard() {
                 </div>
                 <div className="mt-3 flex items-center justify-between border-t border-[#2a2a2a] pt-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-[#9ca3af]">Order Total</span>
-                  <span className="text-lg font-bold text-[#f0c14b]">{formatMoney(orderToEdit.total)}</span>
+                  <span className="text-lg font-bold text-[#e8c4b8]">{formatMoney(orderToEdit.total)}</span>
                 </div>
               </div>
 
@@ -583,8 +583,8 @@ export function OrdersBoard() {
                       onClick={() => setEditCategory(cat.id)}
                       className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold transition ${
                         editCategory === cat.id
-                          ? "bg-[#d4a017] text-black"
-                          : "border border-[#2a2a2a] text-[#9ca3af] hover:border-[#d4a017]/50 hover:text-[#e8c547]"
+                          ? "bg-[#9a5f53] text-black"
+                          : "border border-[#2a2a2a] text-[#9ca3af] hover:border-[#9a5f53]/50 hover:text-[#d4a99a]"
                       }`}
                     >
                       {cat.name}
@@ -622,7 +622,7 @@ export function OrdersBoard() {
                               type="button"
                               disabled={editBusy}
                               onClick={() => setEditQty((prev) => ({ ...prev, [item.id]: Math.max(1, (prev[item.id] ?? 1) - 1) }))}
-                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#d4a017] hover:text-[#e8c547] disabled:opacity-50"
+                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
                             >
                               −
                             </button>
@@ -631,7 +631,7 @@ export function OrdersBoard() {
                               type="button"
                               disabled={editBusy}
                               onClick={() => setEditQty((prev) => ({ ...prev, [item.id]: (prev[item.id] ?? 1) + 1 }))}
-                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#d4a017] hover:text-[#e8c547] disabled:opacity-50"
+                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
                             >
                               +
                             </button>
@@ -640,7 +640,7 @@ export function OrdersBoard() {
                             type="button"
                             disabled={editBusy}
                             onClick={() => addMenuItem(item.id)}
-                            className="rounded-lg bg-[#d4a017] px-3 py-1.5 text-[11px] font-bold text-black transition hover:bg-[#e8c547] disabled:opacity-50"
+                            className="rounded-lg bg-[#9a5f53] px-3 py-1.5 text-[11px] font-bold text-black transition hover:bg-[#d4a99a] disabled:opacity-50"
                           >
                             Add
                           </button>
@@ -686,7 +686,7 @@ export function OrdersBoard() {
               onChange={(e) => setSearch(e.target.value)}
               onFocus={() => setSearchOpen(true)}
               placeholder="Search orders, tables, menu..."
-              className="w-full rounded-full border border-[#2a2a2a] bg-[#141414] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#d4a017]"
+              className="w-full rounded-full border border-[#2a2a2a] bg-[#141414] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#9a5f53]"
             />
             {search.trim() && (
               <button
@@ -703,7 +703,7 @@ export function OrdersBoard() {
                 {/* Orders */}
                 {searchResults.orders.length > 0 && (
                   <div className="mb-3">
-                    <p className="mb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-[#e8c547]">
+                    <p className="mb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-[#d4a99a]">
                       Orders ({searchResults.orders.length})
                     </p>
                     {searchResults.orders.map((o) => (
@@ -751,7 +751,7 @@ export function OrdersBoard() {
                           <p className="truncate text-sm text-white">{i.name}</p>
                           <p className="truncate text-[11px] text-[#9ca3af]">{i.categoryName}</p>
                         </div>
-                        <span className="shrink-0 text-xs font-semibold text-[#f0c14b]">{formatMoney(i.price)}</span>
+                        <span className="shrink-0 text-xs font-semibold text-[#e8c4b8]">{formatMoney(i.price)}</span>
                       </div>
                     ))}
                   </div>

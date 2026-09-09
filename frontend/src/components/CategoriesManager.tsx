@@ -110,11 +110,11 @@ export function CategoriesManager() {
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="New category name"
-          className="min-w-[220px] flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+          className="min-w-[220px] flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
         />
         <button
           type="submit"
-          className="rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000]"
+          className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000]"
         >
           Add category
         </button>
@@ -140,7 +140,7 @@ export function CategoriesManager() {
                   value={editingName}
                   onChange={(e) => setEditingName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && saveRename(c.id)}
-                  className="rounded-lg border border-[#d4a017]/50 bg-white/5 px-2 py-1 text-sm outline-none"
+                  className="rounded-lg border border-[#9a5f53]/50 bg-white/5 px-2 py-1 text-sm outline-none"
                 />
               ) : (
                 <p className="font-medium text-white">{c.name}</p>
@@ -175,7 +175,7 @@ export function CategoriesManager() {
                   <button
                     type="button"
                     onClick={() => saveRename(c.id)}
-                    className="rounded-lg bg-[#d4a017] px-2.5 py-1.5 font-semibold text-black"
+                    className="rounded-lg bg-[#9a5f53] px-2.5 py-1.5 font-semibold text-black"
                   >
                     Save
                   </button>

@@ -63,13 +63,13 @@ export function ProfileManager() {
             rows={4}
             value={value}
             onChange={(e) => setForm({ ...form!, [key]: e.target.value })}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#d4a017]"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#9a5f53]"
           />
         ) : (
           <input
             value={value}
             onChange={(e) => setForm({ ...form!, [key]: e.target.value })}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#d4a017]"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#9a5f53]"
           />
         )}
         {opts?.hint && <span className="mt-1 block text-xs text-[#78716c]">{opts.hint}</span>}
@@ -105,7 +105,7 @@ export function ProfileManager() {
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-[#d4a017] px-5 py-2.5 text-sm font-semibold text-[#050505] disabled:opacity-60"
+          className="rounded-xl bg-[#9a5f53] px-5 py-2.5 text-sm font-semibold text-[#050505] disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save profile"}
         </button>

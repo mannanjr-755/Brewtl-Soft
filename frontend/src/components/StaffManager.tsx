@@ -121,7 +121,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
           {isAdmin ? (
             "Admins can add, promote, and remove staff."
           ) : (
-            <span className="text-[#e8c547]">Only admins can manage staff.</span>
+            <span className="text-[#d4a99a]">Only admins can manage staff.</span>
           )}
         </p>
       </div>
@@ -136,7 +136,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="Full name"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               />
               <input
                 required
@@ -144,7 +144,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Email"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               />
               <input
                 required
@@ -153,12 +153,12 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="Temporary password"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               />
               <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               >
                 <option value="STAFF">Staff</option>
                 <option value="ADMIN">Admin</option>
@@ -166,7 +166,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
               <button
                 type="submit"
                 disabled={busy}
-                className="w-full rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+                className="w-full rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
               >
                 {busy ? "Adding…" : "Add staff member"}
               </button>
@@ -188,7 +188,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
                 className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d4a017]/15 text-sm font-bold text-[#e8c547]">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-sm font-bold text-[#d4a99a]">
                     {s.name.slice(0, 1).toUpperCase()}
                   </div>
                   <div className="min-w-0">
@@ -207,7 +207,7 @@ export function StaffManager({ isAdmin }: { isAdmin: boolean }) {
                   <span
                     className={`flex items-center gap-1 rounded-full px-2.5 py-1 font-medium ring-1 ${
                       s.role === "ADMIN"
-                        ? "bg-[#d4a017]/15 text-[#e8c547] ring-[#d4a017]/40"
+                        ? "bg-[#9a5f53]/15 text-[#d4a99a] ring-[#9a5f53]/40"
                         : "bg-white/5 text-[#a8a29e] ring-white/10"
                     }`}
                   >

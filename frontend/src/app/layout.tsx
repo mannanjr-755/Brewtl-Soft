@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   },
   description:
     "BON PANIER — The French Bakery Cafe & Store kitchen dashboard.",
+  icons: {
+    icon: [{ url: "/logo.png", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png" }],
+    shortcut: ["/logo.png"],
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

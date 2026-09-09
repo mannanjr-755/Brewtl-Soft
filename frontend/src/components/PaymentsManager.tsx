@@ -151,7 +151,7 @@ export function PaymentsManager() {
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
           <p className="text-xs text-[#a8a29e]">Outstanding on orders</p>
-          <p className="mt-1 text-2xl font-semibold text-[#f0c14b]">{formatMoney(outstanding)}</p>
+          <p className="mt-1 text-2xl font-semibold text-[#e8c4b8]">{formatMoney(outstanding)}</p>
         </div>
       </div>
 
@@ -165,7 +165,7 @@ export function PaymentsManager() {
               <select
                 value={form.orderId}
                 onChange={(e) => setForm({ ...form, orderId: e.target.value })}
-                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               >
                 <option value="">No order (walk-in / other)</option>
                 {orders.map((o) => (
@@ -187,7 +187,7 @@ export function PaymentsManager() {
                   value={form.amount}
                   onChange={(e) => setForm({ ...form, amount: e.target.value })}
                   placeholder="0"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
                 />
               </label>
               <label className="block text-sm">
@@ -195,7 +195,7 @@ export function PaymentsManager() {
                 <select
                   value={form.method}
                   onChange={(e) => setForm({ ...form, method: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                  className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
                 >
                   {METHODS.map((m) => (
                     <option key={m} value={m}>
@@ -210,7 +210,7 @@ export function PaymentsManager() {
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
-                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -223,18 +223,18 @@ export function PaymentsManager() {
               value={form.reference}
               onChange={(e) => setForm({ ...form, reference: e.target.value })}
               placeholder="Reference / transaction ID"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
             />
             <input
               value={form.note}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
               placeholder="Note"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
             />
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+              className="w-full rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
             >
               {busy ? "Recording…" : "Record payment"}
             </button>
@@ -268,11 +268,11 @@ export function PaymentsManager() {
                 <span className={`rounded-full px-2.5 py-1 font-medium ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
                   {p.status[0] + p.status.slice(1).toLowerCase()}
                 </span>
-                <span className="font-semibold text-[#f0c14b]">{formatMoney(p.amount)}</span>
+                <span className="font-semibold text-[#e8c4b8]">{formatMoney(p.amount)}</span>
                 <select
                   value={p.status}
                   onChange={(e) => changeStatus(p, e.target.value)}
-                  className="rounded-lg border border-white/10 bg-[#0c0f14] px-2 py-1.5 text-xs outline-none focus:border-[#d4a017]"
+                  className="rounded-lg border border-white/10 bg-[#0c0f14] px-2 py-1.5 text-xs outline-none focus:border-[#9a5f53]"
                 >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>

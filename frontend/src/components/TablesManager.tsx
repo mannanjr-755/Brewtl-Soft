@@ -72,11 +72,11 @@ export function TablesManager() {
           value={tableNumber}
           onChange={(e) => setTableNumber(e.target.value)}
           placeholder="Table number"
-          className="w-40 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+          className="w-40 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
         />
         <button
           type="submit"
-          className="rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000]"
+          className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000]"
         >
           Create table
         </button>
@@ -100,7 +100,7 @@ export function TablesManager() {
                     href={tableUrl(t.tableNumber)}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#e8c547] underline-offset-2 hover:underline"
+                    className="text-[#d4a99a] underline-offset-2 hover:underline"
                   >
                     {origin
                       ? `${origin}/r/${slug}/t/${t.tableNumber}`

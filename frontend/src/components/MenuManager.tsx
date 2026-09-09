@@ -214,7 +214,7 @@ export function MenuManager() {
               <div className="mt-3 rounded-xl border border-[#2a2a2a] bg-[#0e0e0e] p-3 text-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-[#9ca3af]">Price</span>
-                  <span className="font-semibold text-[#f0c14b]">{formatMoney(itemToDelete.price)}</span>
+                  <span className="font-semibold text-[#e8c4b8]">{formatMoney(itemToDelete.price)}</span>
                 </div>
                 <div className="mt-1.5 flex items-center justify-between">
                   <span className="text-[#9ca3af]">Status</span>
@@ -260,14 +260,14 @@ export function MenuManager() {
       {catToEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <div className="w-full max-w-sm rounded-2xl border border-[#2a2a2a] bg-[#141414] p-5 shadow-2xl shadow-black/50">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#d4a017]">Rename Category</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a5f53]">Rename Category</p>
             <h3 className="mt-3 text-lg font-semibold text-white">{catToEdit.name}</h3>
             <input
               autoFocus
               value={catEditName}
               onChange={(e) => setCatEditName(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); renameCategory(); } }}
-              className="mt-4 w-full rounded-xl border border-[#2a2a2a] bg-[#0e0e0e] px-3 py-2.5 text-sm text-white outline-none focus:border-[#d4a017]"
+              className="mt-4 w-full rounded-xl border border-[#2a2a2a] bg-[#0e0e0e] px-3 py-2.5 text-sm text-white outline-none focus:border-[#9a5f53]"
             />
             <div className="mt-5 flex gap-3">
               <button
@@ -281,7 +281,7 @@ export function MenuManager() {
                 type="button"
                 disabled={catBusy || !catEditName.trim()}
                 onClick={renameCategory}
-                className="flex-1 rounded-xl bg-[#d4a017] py-2.5 text-sm font-semibold text-black transition hover:bg-[#e8c547] disabled:opacity-50"
+                className="flex-1 rounded-xl bg-[#9a5f53] py-2.5 text-sm font-semibold text-black transition hover:bg-[#d4a99a] disabled:opacity-50"
               >
                 {catBusy ? "Saving…" : "Save"}
               </button>
@@ -342,19 +342,19 @@ export function MenuManager() {
       </div>
 
       {/* Item form */}
-      <section ref={formRef} className="rounded-2xl border bg-white/[0.03] p-5 transition-colors duration-300" style={{ borderColor: editingItem ? "rgba(212,160,23,0.4)" : "rgba(255,255,255,0.1)" }}>
+      <section ref={formRef} className="rounded-2xl border bg-white/[0.03] p-5 transition-colors duration-300" style={{ borderColor: editingItem ? "rgba(154,95,83,0.4)" : "rgba(255,255,255,0.1)" }}>
         {editingItem && (
-          <div className="mb-3 flex items-center justify-between rounded-xl border border-[#d4a017]/30 bg-[#d4a017]/10 px-4 py-2.5">
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-[#9a5f53]/30 bg-[#9a5f53]/10 px-4 py-2.5">
             <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#d4a017]/20 text-[10px] font-bold text-[#e8c547]">✎</span>
-              <span className="text-sm text-[#e8c547]">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#9a5f53]/20 text-[10px] font-bold text-[#d4a99a]">✎</span>
+              <span className="text-sm text-[#d4a99a]">
                 Editing <span className="font-semibold text-white">{editingItem.name}</span>
               </span>
             </div>
             <button
               type="button"
               onClick={() => { setEditingItem(null); setItemForm((f) => ({ ...emptyItem, categoryId: f.categoryId })); }}
-              className="rounded-lg border border-[#d4a017]/30 px-2.5 py-1 text-xs font-medium text-[#e8c547] transition hover:bg-[#d4a017]/10"
+              className="rounded-lg border border-[#9a5f53]/30 px-2.5 py-1 text-xs font-medium text-[#d4a99a] transition hover:bg-[#9a5f53]/10"
             >
               Cancel edit
             </button>
@@ -369,7 +369,7 @@ export function MenuManager() {
             value={itemForm.name}
             onChange={(e) => setItemForm({ ...itemForm, name: e.target.value })}
             placeholder="Name"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
           />
           <input
             required
@@ -379,13 +379,13 @@ export function MenuManager() {
             value={itemForm.price}
             onChange={(e) => setItemForm({ ...itemForm, price: e.target.value })}
             placeholder="Price"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
           />
           <select
             required
             value={itemForm.categoryId}
             onChange={(e) => setItemForm({ ...itemForm, categoryId: e.target.value })}
-            className="rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+            className="rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
           >
             <option value="">Select category</option>
             {categories.map((c) => (
@@ -398,9 +398,9 @@ export function MenuManager() {
             value={itemForm.imageUrl}
             onChange={(e) => setItemForm({ ...itemForm, imageUrl: e.target.value })}
             placeholder="Image URL (or upload below)"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
           />
-          <div className="sm:col-span-2 flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-[#d4a017]/40 bg-black/20 p-3">
+          <div className="sm:col-span-2 flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-[#9a5f53]/40 bg-black/20 p-3">
             <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-[#141414]">
               {itemForm.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -424,7 +424,7 @@ export function MenuManager() {
                   type="button"
                   disabled={uploading}
                   onClick={() => fileInputRef.current?.click()}
-                  className="rounded-lg border border-[#d4a017]/50 bg-[#d4a017]/10 px-3 py-1.5 text-xs font-semibold text-[#e8c547] disabled:opacity-50"
+                  className="rounded-lg border border-[#9a5f53]/50 bg-[#9a5f53]/10 px-3 py-1.5 text-xs font-semibold text-[#d4a99a] disabled:opacity-50"
                 >
                   {uploading ? "Uploading…" : "Choose image from file"}
                 </button>
@@ -445,13 +445,13 @@ export function MenuManager() {
             onChange={(e) => setItemForm({ ...itemForm, description: e.target.value })}
             placeholder="Description"
             rows={2}
-            className="sm:col-span-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#d4a017]"
+            className="sm:col-span-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
           />
           <div className="sm:col-span-2 flex gap-2">
             <button
               type="submit"
               disabled={uploading}
-              className="rounded-xl bg-[#d4a017] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+              className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
             >
               {editingItem ? "Save changes" : "Create item"}
             </button>
@@ -485,7 +485,7 @@ export function MenuManager() {
               key={item.id}
               className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-[var(--bg-card)] px-4 py-3 transition-all duration-200 ${
                 editingItem?.id === item.id
-                  ? "border-[var(--gold)]/50 bg-[var(--gold)]/[0.04] shadow-[0_0_15px_rgba(212,160,23,0.08)]"
+                  ? "border-[var(--gold)]/50 bg-[var(--gold)]/[0.04] shadow-[0_0_15px_rgba(154,95,83,0.08)]"
                   : "border-[var(--border)]"
               }`}
             >

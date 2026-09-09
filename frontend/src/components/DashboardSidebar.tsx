@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -101,15 +102,24 @@ export function DashboardSidebar({
           collapsed ? "flex-col gap-2 px-2" : "gap-3 px-3"
         }`}
       >
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--gold)] text-[var(--gold)]">
-          <UtensilsCrossed className="h-5 w-5" />
+        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-[var(--gold)]/40 shadow-[var(--shadow)]">
+          <Image
+            src="/logo.png"
+            alt="BON PANIER"
+            width={40}
+            height={40}
+            className="h-full w-full object-cover"
+            priority
+          />
         </div>
         {!collapsed && (
           <div className="min-w-0 flex-1">
             <p className="truncate font-display text-lg leading-tight text-[var(--gold-bright)]">
               {restaurantName}
             </p>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-dim)]">Restaurant</p>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-dim)]">
+              Bakery Cafe
+            </p>
           </div>
         )}
         <button

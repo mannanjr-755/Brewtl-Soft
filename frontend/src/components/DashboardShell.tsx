@@ -61,7 +61,19 @@ export async function DashboardShell({
       <DashboardSidebar active={active} restaurantName={restaurantName} />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-40 flex items-center justify-end gap-3 border-b border-[var(--border)] bg-[var(--bg-elevated)]/95 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg-elevated)]/80">
+        <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-elevated)]/95 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg-elevated)]/80">
+          <div className="flex min-w-0 items-center gap-2 lg:invisible lg:w-0 lg:overflow-hidden">
+            <img
+              src="/logo.png"
+              alt="BON PANIER"
+              width={32}
+              height={32}
+              className="h-8 w-8 shrink-0 rounded-lg border border-[var(--gold)]/40 object-cover"
+            />
+            <span className="truncate font-display text-sm text-[var(--gold-bright)]">
+              {restaurantName}
+            </span>
+          </div>
           {navbarControls}
         </header>
 
