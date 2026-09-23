@@ -23,7 +23,7 @@ export async function DashboardShell({
   const session = await auth();
   const userName = session?.user.name || "Admin";
   const roleLabel = session?.user.role === "ADMIN" ? "Administrator" : "Staff";
-  const restaurantName = session?.user.restaurantName || "BON PANIER";
+  const restaurantName = session?.user.restaurantName || "BREWTL";
   void newOrderCount;
   void preparingCount;
 
@@ -65,7 +65,7 @@ export async function DashboardShell({
           <div className="flex min-w-0 items-center gap-2 lg:invisible lg:w-0 lg:overflow-hidden">
             <img
               src="/logo.png"
-              alt="BON PANIER"
+              alt="BREWTL"
               width={32}
               height={32}
               className="h-8 w-8 shrink-0 rounded-lg border border-[var(--gold)]/40 object-cover"

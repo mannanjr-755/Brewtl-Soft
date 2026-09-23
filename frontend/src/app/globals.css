@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
-/* BON PANIER brand palette from logo asset (terracotta + cream) */
+/* BREWTL brand palette from logo asset (deep ink #101820 + warm barley gold) */
 :root,
 [data-theme="light"] {
-  --bg: #f3ede6;
-  --bg-elevated: #fdfaf5;
-  --bg-card: #fffcfa;
-  --bg-soft: #ede6de;
-  --bg-sidebar: #f7f1ea;
-  --border: #e0d5cc;
-  --border-strong: #cbbdb2;
-  --gold: #9a5f53;
-  --gold-bright: #b5786a;
-  --gold-dim: #73453b;
-  --text: #2c211e;
-  --text-muted: #6b5a54;
-  --text-dim: #9a877f;
+  --bg: #f4f0e9;
+  --bg-elevated: #faf8f3;
+  --bg-card: #ffffff;
+  --bg-soft: #ece6da;
+  --bg-sidebar: #efeae0;
+  --border: #e0d8c8;
+  --border-strong: #c8bda6;
+  --gold: #a8823b;
+  --gold-bright: #bf9b52;
+  --gold-dim: #86692c;
+  --text: #1d2227;
+  --text-muted: #5e5a52;
+  --text-dim: #8a8478;
   --danger: #ef4444;
   --orange: #f97316;
   --success: #16a34a;
@@ -25,19 +25,19 @@
 }
 
 [data-theme="dark"] {
-  --bg: #140e0c;
-  --bg-elevated: #1c1412;
-  --bg-card: #241a17;
-  --bg-soft: #2a1f1c;
-  --bg-sidebar: #120c0a;
-  --border: #3a2e2a;
-  --border-strong: #4d3d38;
-  --gold: #b5786a;
-  --gold-bright: #d4a99a;
-  --gold-dim: #8f594d;
-  --text: #f5f1e6;
-  --text-muted: #b5a49a;
-  --text-dim: #8a7870;
+  --bg: #101820;
+  --bg-elevated: #151e28;
+  --bg-card: #1a2530;
+  --bg-soft: #1f2b37;
+  --bg-sidebar: #0d141b;
+  --border: #2a3642;
+  --border-strong: #3d4b58;
+  --gold: #c6a15b;
+  --gold-bright: #ddbe7e;
+  --gold-dim: #9a7c3f;
+  --text: #f2ede3;
+  --text-muted: #b9b2a5;
+  --text-dim: #8a8478;
   --danger: #ef4444;
   --orange: #f97316;
   --success: #22c55e;
@@ -118,10 +118,10 @@ h3,
 @keyframes pulse-gold {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(154, 95, 83, 0.35);
+    box-shadow: 0 0 0 0 rgba(198, 161, 91, 0.35);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(154, 95, 83, 0);
+    box-shadow: 0 0 0 8px rgba(198, 161, 91, 0);
   }
 }
 
@@ -170,11 +170,9 @@ h3,
 
 /* Soft overrides for pages still using legacy dark hex utilities */
 [data-theme="light"] .bg-black,
-[data-theme="light"] .bg-\[\#050505\],
-[data-theme="light"] .bg-\[\#0a0a0a\],
-[data-theme="light"] .bg-\[\#0e0e0e\],
-[data-theme="light"] .bg-\[\#141414\],
-[data-theme="light"] .bg-\[\#0c0f14\] {
+[data-theme="light"] .bg-\[\#101820\],
+[data-theme="light"] .bg-\[\#151e28\],
+[data-theme="light"] .bg-\[\#1a2530\] {
   background-color: var(--bg-card) !important;
 }
 
@@ -182,8 +180,8 @@ h3,
   color: var(--text) !important;
 }
 
-[data-theme="light"] .border-\[\#1c1c1c\],
-[data-theme="light"] .border-\[\#2a2a2a\],
+[data-theme="light"] .border-\[\#1a2530\],
+[data-theme="light"] .border-\[\#2e3b47\],
 [data-theme="light"] .border-white\/10 {
   border-color: var(--border) !important;
 }
@@ -194,10 +192,9 @@ h3,
   background-color: var(--bg-soft) !important;
 }
 
-[data-theme="light"] .text-\[\#a8a29e\],
-[data-theme="light"] .text-\[\#9ca3af\],
-[data-theme="light"] .text-\[\#78716c\],
-[data-theme="light"] .text-\[\#6b7280\],
+[data-theme="light"] .text-\[\#a39b8c\],
+[data-theme="light"] .text-\[\#b9b2a5\],
+[data-theme="light"] .text-\[\#8a8478\],
 [data-theme="light"] .text-\[\#aaa\],
 [data-theme="light"] .text-\[\#888\],
 [data-theme="light"] .text-\[\#777\],
@@ -205,8 +202,6 @@ h3,
   color: var(--text-muted) !important;
 }
 
-[data-theme="light"] .text-\[\#d1d5db\],
-[data-theme="light"] .text-\[\#e5e7eb\],
-[data-theme="light"] .text-\[\#d6d3d1\] {
+[data-theme="light"] .text-\[\#f2ede3\] {
   color: var(--text) !important;
 }

@@ -396,7 +396,7 @@ export function OrdersBoard() {
       label: "Total Orders",
       value: String(todayOrders.length),
       icon: "📋",
-      tone: "text-[#d4a99a] bg-[#9a5f53]/15",
+      tone: "text-[#ddbe7e] bg-[#c6a15b]/15",
       trend: "↑ 25% from yesterday",
     },
     {
@@ -442,15 +442,15 @@ export function OrdersBoard() {
     <div className="space-y-6">
       {orderToDelete && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-[#2a2a2a] bg-[#141414] p-5 shadow-2xl shadow-black/50">
+          <div className="w-full max-w-md rounded-2xl border border-[#2e3b47] bg-[#1a2530] p-5 shadow-2xl shadow-black/50">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ef4444]">Delete order</p>
             <h3 className="mt-3 text-xl font-semibold text-white">{orderToDelete.orderNumber}</h3>
-            <p className="mt-2 text-sm text-[#cbd5e1]">
+            <p className="mt-2 text-sm text-[#f2ede3]">
               Are you sure you want to remove this order for <span className="font-medium text-white">{orderToDelete.customerName}</span>?
             </p>
-            <div className="mt-4 rounded-xl border border-[#2a2a2a] bg-[#0e0e0e] p-3 text-sm text-[#d1d5db]">
+            <div className="mt-4 rounded-xl border border-[#2e3b47] bg-[#151e28] p-3 text-sm text-[#f2ede3]">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-[#9ca3af]">Table</span>
+                <span className="text-[#b9b2a5]">Table</span>
                 <span>
                   {orderToDelete.customerName === "Walking Customer"
                     ? "—"
@@ -458,15 +458,15 @@ export function OrdersBoard() {
                 </span>
               </div>
               <div className="mt-2 flex items-center justify-between gap-3">
-                <span className="text-[#9ca3af]">Total</span>
-                <span className="font-semibold text-[#e8c4b8]">{formatMoney(orderToDelete.total)}</span>
+                <span className="text-[#b9b2a5]">Total</span>
+                <span className="font-semibold text-[#ead498]">{formatMoney(orderToDelete.total)}</span>
               </div>
             </div>
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
                 onClick={() => setOrderToDelete(null)}
-                className="flex-1 rounded-lg border border-[#2a2a2a] bg-[#1a1a1a] py-2.5 text-sm font-medium text-[#d1d5db] transition hover:bg-[#222]"
+                className="flex-1 rounded-lg border border-[#2e3b47] bg-[#1a2530] py-2.5 text-sm font-medium text-[#f2ede3] transition hover:bg-[#222]"
               >
                 Cancel
               </button>
@@ -485,15 +485,15 @@ export function OrdersBoard() {
 
       {orderToEdit && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-2xl border border-[#2a2a2a] bg-[#141414] shadow-2xl shadow-black/50">
+          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col rounded-2xl border border-[#2e3b47] bg-[#1a2530] shadow-2xl shadow-black/50">
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-[#2a2a2a] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#2e3b47] px-5 py-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9a5f53]">Edit Order</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#c6a15b]">Edit Order</p>
                 <h3 className="text-lg font-semibold text-white">
                   {orderToEdit.orderNumber}
                   {orderToEdit.customerName !== "Walking Customer" && (
-                    <span className="ml-2 text-sm font-normal text-[#9ca3af]">
+                    <span className="ml-2 text-sm font-normal text-[#b9b2a5]">
                       Table {orderToEdit.table.tableNumber}
                     </span>
                   )}
@@ -503,7 +503,7 @@ export function OrdersBoard() {
                 <button
                   type="button"
                   onClick={() => setOrderToEdit(null)}
-                  className="rounded-lg border border-[#2a2a2a] px-3 py-1.5 text-xs text-[#9ca3af] transition hover:bg-[#1a1a1a] hover:text-white"
+                  className="rounded-lg border border-[#2e3b47] px-3 py-1.5 text-xs text-[#b9b2a5] transition hover:bg-[#1a2530] hover:text-white"
                 >
                   Done
                 </button>
@@ -513,22 +513,22 @@ export function OrdersBoard() {
             {/* Body */}
             <div className="flex min-h-0 flex-1 flex-col md:flex-row">
               {/* Left: Current items */}
-              <div className="flex flex-1 flex-col overflow-hidden border-r border-[#2a2a2a] p-4 md:w-1/2">
-                <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#9ca3af]">Current Items</h4>
+              <div className="flex flex-1 flex-col overflow-hidden border-r border-[#2e3b47] p-4 md:w-1/2">
+                <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#b9b2a5]">Current Items</h4>
                 <div className="flex-1 space-y-2 overflow-y-auto">
                   {orderToEdit.items.length === 0 && (
-                    <p className="rounded-xl border border-dashed border-[#2a2a2a] px-3 py-6 text-center text-xs text-[#4b5563]">
+                    <p className="rounded-xl border border-dashed border-[#2e3b47] px-3 py-6 text-center text-xs text-[#4b5563]">
                       No items in this order
                     </p>
                   )}
                   {orderToEdit.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-3 rounded-lg border border-[#1f1f1f] bg-[#0e0e0e] px-3 py-2"
+                      className="flex items-center gap-3 rounded-lg border border-[#1a2530] bg-[#151e28] px-3 py-2"
                     >
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm text-white">{item.itemName}</p>
-                        <p className="text-[11px] text-[#9ca3af]">
+                        <p className="text-[11px] text-[#b9b2a5]">
                           {formatMoney(item.unitPrice)} × {item.quantity}
                         </p>
                       </div>
@@ -537,7 +537,7 @@ export function OrdersBoard() {
                           type="button"
                           disabled={editBusy}
                           onClick={() => updateOrderItemQty(item.id, item.quantity - 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
+                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2e3b47] text-xs text-[#b9b2a5] transition hover:border-[#c6a15b] hover:text-[#ddbe7e] disabled:opacity-50"
                         >
                           −
                         </button>
@@ -546,7 +546,7 @@ export function OrdersBoard() {
                           type="button"
                           disabled={editBusy}
                           onClick={() => updateOrderItemQty(item.id, item.quantity + 1)}
-                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
+                          className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2e3b47] text-xs text-[#b9b2a5] transition hover:border-[#c6a15b] hover:text-[#ddbe7e] disabled:opacity-50"
                         >
                           +
                         </button>
@@ -559,21 +559,21 @@ export function OrdersBoard() {
                           ×
                         </button>
                       </div>
-                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[#e8c4b8]">
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[#ead498]">
                         {formatMoney(item.subtotal)}
                       </span>
                     </div>
                   ))}
                 </div>
-                <div className="mt-3 flex items-center justify-between border-t border-[#2a2a2a] pt-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#9ca3af]">Order Total</span>
-                  <span className="text-lg font-bold text-[#e8c4b8]">{formatMoney(orderToEdit.total)}</span>
+                <div className="mt-3 flex items-center justify-between border-t border-[#2e3b47] pt-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#b9b2a5]">Order Total</span>
+                  <span className="text-lg font-bold text-[#ead498]">{formatMoney(orderToEdit.total)}</span>
                 </div>
               </div>
 
               {/* Right: Menu to add */}
               <div className="flex flex-1 flex-col overflow-hidden p-4 md:w-1/2">
-                <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#9ca3af]">Add from Menu</h4>
+                <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-[#b9b2a5]">Add from Menu</h4>
                 {/* Category tabs */}
                 <div className="-mx-1 mb-3 flex gap-1.5 overflow-x-auto pb-1">
                   {menuCategories.map((cat) => (
@@ -583,8 +583,8 @@ export function OrdersBoard() {
                       onClick={() => setEditCategory(cat.id)}
                       className={`shrink-0 rounded-full px-3 py-1 text-[11px] font-semibold transition ${
                         editCategory === cat.id
-                          ? "bg-[#9a5f53] text-black"
-                          : "border border-[#2a2a2a] text-[#9ca3af] hover:border-[#9a5f53]/50 hover:text-[#d4a99a]"
+                          ? "bg-[#c6a15b] text-black"
+                          : "border border-[#2e3b47] text-[#b9b2a5] hover:border-[#c6a15b]/50 hover:text-[#ddbe7e]"
                       }`}
                     >
                       {cat.name}
@@ -605,12 +605,12 @@ export function OrdersBoard() {
                           className={`flex items-center gap-3 rounded-lg border px-3 py-2 transition ${
                             inOrder
                               ? "border-[#22c55e]/40 bg-[#22c55e]/5"
-                              : "border-[#1f1f1f] bg-[#0e0e0e]"
+                              : "border-[#1a2530] bg-[#151e28]"
                           }`}
                         >
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm text-white">{item.name}</p>
-                            <p className="text-[11px] text-[#9ca3af]">{formatMoney(item.price)}</p>
+                            <p className="text-[11px] text-[#b9b2a5]">{formatMoney(item.price)}</p>
                           </div>
                           {inOrder && (
                             <span className="rounded-full bg-[#22c55e]/15 px-2 py-0.5 text-[10px] font-bold text-[#22c55e]">
@@ -622,7 +622,7 @@ export function OrdersBoard() {
                               type="button"
                               disabled={editBusy}
                               onClick={() => setEditQty((prev) => ({ ...prev, [item.id]: Math.max(1, (prev[item.id] ?? 1) - 1) }))}
-                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
+                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2e3b47] text-xs text-[#b9b2a5] transition hover:border-[#c6a15b] hover:text-[#ddbe7e] disabled:opacity-50"
                             >
                               −
                             </button>
@@ -631,7 +631,7 @@ export function OrdersBoard() {
                               type="button"
                               disabled={editBusy}
                               onClick={() => setEditQty((prev) => ({ ...prev, [item.id]: (prev[item.id] ?? 1) + 1 }))}
-                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2a2a2a] text-xs text-[#9ca3af] transition hover:border-[#9a5f53] hover:text-[#d4a99a] disabled:opacity-50"
+                              className="flex h-6 w-6 items-center justify-center rounded-md border border-[#2e3b47] text-xs text-[#b9b2a5] transition hover:border-[#c6a15b] hover:text-[#ddbe7e] disabled:opacity-50"
                             >
                               +
                             </button>
@@ -640,7 +640,7 @@ export function OrdersBoard() {
                             type="button"
                             disabled={editBusy}
                             onClick={() => addMenuItem(item.id)}
-                            className="rounded-lg bg-[#9a5f53] px-3 py-1.5 text-[11px] font-bold text-black transition hover:bg-[#d4a99a] disabled:opacity-50"
+                            className="rounded-lg bg-[#c6a15b] px-3 py-1.5 text-[11px] font-bold text-black transition hover:bg-[#ddbe7e] disabled:opacity-50"
                           >
                             Add
                           </button>
@@ -648,7 +648,7 @@ export function OrdersBoard() {
                       );
                     })}
                   {menuCategories.find((c) => c.id === editCategory)?.items.filter((i) => i.available).length === 0 && (
-                    <p className="rounded-xl border border-dashed border-[#2a2a2a] px-3 py-6 text-center text-xs text-[#4b5563]">
+                    <p className="rounded-xl border border-dashed border-[#2e3b47] px-3 py-6 text-center text-xs text-[#4b5563]">
                       No items in this category
                     </p>
                   )}
@@ -673,7 +673,7 @@ export function OrdersBoard() {
           <button
             type="button"
             onClick={() => { setSearchOpen((v) => !v); if (searchOpen) setSearch(""); }}
-            className="rounded-full border border-[#2a2a2a] p-2.5 text-[#9ca3af] sm:hidden"
+            className="rounded-full border border-[#2e3b47] p-2.5 text-[#b9b2a5] sm:hidden"
           >
             <Search className="h-5 w-5" />
           </button>
@@ -686,37 +686,37 @@ export function OrdersBoard() {
               onChange={(e) => setSearch(e.target.value)}
               onFocus={() => setSearchOpen(true)}
               placeholder="Search orders, tables, menu..."
-              className="w-full rounded-full border border-[#2a2a2a] bg-[#141414] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-full border border-[#2e3b47] bg-[#1a2530] py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#c6a15b]"
             />
             {search.trim() && (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase text-[#9ca3af] hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase text-[#b9b2a5] hover:text-white"
               >
                 Clear
               </button>
             )}
             {/* Search results dropdown */}
             {searchResults && searchResults.totalMatches > 0 && (
-              <div className="absolute left-0 right-0 top-full z-30 mt-2 max-h-[70vh] overflow-y-auto rounded-2xl border border-[#2a2a2a] bg-[#141414] p-3 shadow-2xl shadow-black/60">
+              <div className="absolute left-0 right-0 top-full z-30 mt-2 max-h-[70vh] overflow-y-auto rounded-2xl border border-[#2e3b47] bg-[#1a2530] p-3 shadow-2xl shadow-black/60">
                 {/* Orders */}
                 {searchResults.orders.length > 0 && (
                   <div className="mb-3">
-                    <p className="mb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-[#d4a99a]">
+                    <p className="mb-1.5 px-1 text-[10px] font-bold uppercase tracking-wider text-[#ddbe7e]">
                       Orders ({searchResults.orders.length})
                     </p>
                     {searchResults.orders.map((o) => (
                       <div key={o.id} className="flex items-center justify-between rounded-lg px-2 py-1.5 transition hover:bg-white/5">
                         <div className="min-w-0">
                           <p className="truncate text-sm text-white">{o.orderNumber}</p>
-                          <p className="truncate text-[11px] text-[#9ca3af]">
+                          <p className="truncate text-[11px] text-[#b9b2a5]">
                             {o.customerName === "Walking Customer"
                               ? o.customerName
                               : `${o.customerName} · Table ${o.table.tableNumber}`}
                           </p>
                         </div>
-                        <span className="shrink-0 rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-[#9ca3af]">
+                        <span className="shrink-0 rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-[#b9b2a5]">
                           {STATUS_LABELS[o.status as OrderStatus] ?? o.status}
                         </span>
                       </div>
@@ -749,9 +749,9 @@ export function OrdersBoard() {
                       <div key={i.id} className="flex items-center justify-between rounded-lg px-2 py-1.5 transition hover:bg-white/5">
                         <div className="min-w-0">
                           <p className="truncate text-sm text-white">{i.name}</p>
-                          <p className="truncate text-[11px] text-[#9ca3af]">{i.categoryName}</p>
+                          <p className="truncate text-[11px] text-[#b9b2a5]">{i.categoryName}</p>
                         </div>
-                        <span className="shrink-0 text-xs font-semibold text-[#e8c4b8]">{formatMoney(i.price)}</span>
+                        <span className="shrink-0 text-xs font-semibold text-[#ead498]">{formatMoney(i.price)}</span>
                       </div>
                     ))}
                   </div>
@@ -761,8 +761,8 @@ export function OrdersBoard() {
             )}
             {/* No results */}
             {searchResults && searchResults.totalMatches === 0 && (
-              <div className="absolute left-0 right-0 top-full z-30 mt-2 rounded-2xl border border-[#2a2a2a] bg-[#141414] p-5 text-center shadow-2xl shadow-black/60">
-                <p className="text-sm text-[#6b7280]">No results found for &ldquo;{search}&rdquo;</p>
+              <div className="absolute left-0 right-0 top-full z-30 mt-2 rounded-2xl border border-[#2e3b47] bg-[#1a2530] p-5 text-center shadow-2xl shadow-black/60">
+                <p className="text-sm text-[#8a8478]">No results found for &ldquo;{search}&rdquo;</p>
               </div>
             )}
           </div>

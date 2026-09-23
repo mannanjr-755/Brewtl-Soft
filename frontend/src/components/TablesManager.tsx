@@ -59,7 +59,7 @@ export function TablesManager() {
   return (
     <div>
       <h1 className="text-2xl font-semibold tracking-tight text-white">Tables</h1>
-      <p className="mt-1 text-sm text-[#a8a29e]">
+      <p className="mt-1 text-sm text-[#a39b8c]">
         Each table has a URL for NFC cards and QR codes. The card only stores this URL — not the
         menu.
       </p>
@@ -72,11 +72,11 @@ export function TablesManager() {
           value={tableNumber}
           onChange={(e) => setTableNumber(e.target.value)}
           placeholder="Table number"
-          className="w-40 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+          className="w-40 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
         />
         <button
           type="submit"
-          className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000]"
+          className="rounded-xl bg-[#c6a15b] px-4 py-2 text-sm font-semibold text-[#000000]"
         >
           Create table
         </button>
@@ -84,7 +84,7 @@ export function TablesManager() {
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10">
         <table className="w-full min-w-[480px] text-left text-sm">
-          <thead className="border-b border-white/10 bg-white/[0.03] text-[#a8a29e]">
+          <thead className="border-b border-white/10 bg-white/[0.03] text-[#a39b8c]">
             <tr>
               <th className="px-4 py-3 font-medium">Table</th>
               <th className="px-4 py-3 font-medium">Customer URL (NFC / QR)</th>
@@ -100,14 +100,14 @@ export function TablesManager() {
                     href={tableUrl(t.tableNumber)}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#d4a99a] underline-offset-2 hover:underline"
+                    className="text-[#ddbe7e] underline-offset-2 hover:underline"
                   >
                     {origin
                       ? `${origin}/r/${slug}/t/${t.tableNumber}`
                       : `/r/${slug}/t/${t.tableNumber}`}
                   </a>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-[#a8a29e]">{t.uniqueCode}</td>
+                <td className="px-4 py-3 font-mono text-xs text-[#a39b8c]">{t.uniqueCode}</td>
               </tr>
             ))}
           </tbody>

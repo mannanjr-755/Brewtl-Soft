@@ -1,20 +1,21 @@
 {
-  "name": "bon-panier-crm-desktop",
+  "name": "brewtl-crm-desktop",
   "version": "1.0.0",
   "private": true,
-  "description": "BON PANIER CRM desktop application",
-  "author": "BON PANIER",
+  "description": "BREWTL CRM desktop application",
+  "author": "BREWTL",
   "main": "main.js",
   "scripts": {
+    "icons": "node scripts/generate-icons.js",
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder --win nsis",
     "dist:portable": "electron-builder --win portable"
   },
   "build": {
-    "appId": "com.bonpanier.crm",
-    "productName": "BON PANIER CRM",
-    "copyright": "Copyright © BON PANIER",
+    "appId": "com.brewtl.crm",
+    "productName": "BREWTL CRM",
+    "copyright": "Copyright © BREWTL",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -23,6 +24,12 @@
       "main.js",
       "preload.js",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/icon.ico",
+        "to": "icon.ico"
+      }
     ],
     "win": {
       "target": [
@@ -34,14 +41,14 @@
         }
       ],
       "icon": "build/icon.ico",
-      "artifactName": "BON-PANIER-CRM-Setup-${version}.${ext}"
+      "artifactName": "BREWTL-CRM-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "BON PANIER CRM",
+      "shortcutName": "BREWTL CRM",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
@@ -53,6 +60,7 @@
   "devDependencies": {
     "electron": "^37.2.0",
     "electron-builder": "^26.0.12",
-    "png-to-ico": "^3.0.2"
+    "png-to-ico": "^3.0.2",
+    "sharp": "^0.34.5"
   }
 }

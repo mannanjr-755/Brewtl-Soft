@@ -46,7 +46,7 @@ export function ProfileManager() {
   }
 
   if (!form) {
-    return <p className="text-sm text-[#a8a29e]">Loading profile…</p>;
+    return <p className="text-sm text-[#a39b8c]">Loading profile…</p>;
   }
 
   function field(
@@ -57,22 +57,22 @@ export function ProfileManager() {
     const value = form![key] ?? "";
     return (
       <label className="block text-sm">
-        <span className="mb-1.5 block font-medium text-[#d6d3d1]">{label}</span>
+        <span className="mb-1.5 block font-medium text-[#f2ede3]">{label}</span>
         {opts?.multiline ? (
           <textarea
             rows={4}
             value={value}
             onChange={(e) => setForm({ ...form!, [key]: e.target.value })}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#9a5f53]"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#c6a15b]"
           />
         ) : (
           <input
             value={value}
             onChange={(e) => setForm({ ...form!, [key]: e.target.value })}
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#9a5f53]"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 outline-none focus:border-[#c6a15b]"
           />
         )}
-        {opts?.hint && <span className="mt-1 block text-xs text-[#78716c]">{opts.hint}</span>}
+        {opts?.hint && <span className="mt-1 block text-xs text-[#8a8478]">{opts.hint}</span>}
       </label>
     );
   }
@@ -80,7 +80,7 @@ export function ProfileManager() {
   return (
     <div>
       <h1 className="text-2xl font-semibold tracking-tight text-white">Restaurant profile</h1>
-      <p className="mt-1 text-sm text-[#a8a29e]">
+      <p className="mt-1 text-sm text-[#a39b8c]">
         This information appears on the customer menu page.
       </p>
 
@@ -105,7 +105,7 @@ export function ProfileManager() {
         <button
           type="submit"
           disabled={saving}
-          className="rounded-xl bg-[#9a5f53] px-5 py-2.5 text-sm font-semibold text-[#050505] disabled:opacity-60"
+          className="rounded-xl bg-[#c6a15b] px-5 py-2.5 text-sm font-semibold text-[#101820] disabled:opacity-60"
         >
           {saving ? "Saving…" : "Save profile"}
         </button>

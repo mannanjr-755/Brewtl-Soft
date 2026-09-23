@@ -37,23 +37,23 @@ export function LoginForm() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none placeholder:text-[#6b7280] focus:border-[#9a5f53] focus:ring-1 focus:ring-[#9a5f53]/40";
+    "w-full rounded-xl border border-[#2e3b47] bg-[#101820] px-4 py-3 text-sm text-white outline-none placeholder:text-[#8a8478] focus:border-[#c6a15b] focus:ring-1 focus:ring-[#c6a15b]/40";
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Email</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Email</span>
         <input
           type="email"
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className={inputClass}
-          placeholder="admin@bonpanier.com"
+          placeholder="admin@brewtl.com"
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Password</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Password</span>
         <input
           type="password"
           required
@@ -73,7 +73,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-[#9a5f53] py-3.5 text-sm font-bold uppercase tracking-wider text-[#f5f1e6] disabled:opacity-60"
+        className="w-full rounded-md bg-[#c6a15b] py-3.5 text-sm font-bold uppercase tracking-wider text-[#f2ede3] disabled:opacity-60"
       >
         {loading ? "Signing in…" : "Sign in"}
       </button>

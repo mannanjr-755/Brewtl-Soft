@@ -63,12 +63,12 @@ export function RegisterForm() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-[#2a2a2a] bg-[#0a0a0a] px-4 py-3 text-sm text-white outline-none placeholder:text-[#6b7280] focus:border-[#9a5f53] focus:ring-1 focus:ring-[#9a5f53]/40";
+    "w-full rounded-xl border border-[#2e3b47] bg-[#101820] px-4 py-3 text-sm text-white outline-none placeholder:text-[#8a8478] focus:border-[#c6a15b] focus:ring-1 focus:ring-[#c6a15b]/40";
 
   return (
     <form onSubmit={onSubmit} className="space-y-4">
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Restaurant name</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Restaurant name</span>
         <input
           required
           value={restaurantName}
@@ -78,7 +78,7 @@ export function RegisterForm() {
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">URL slug</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">URL slug</span>
         <input
           required
           value={previewSlug}
@@ -94,7 +94,7 @@ export function RegisterForm() {
         </span>
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Your name</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Your name</span>
         <input
           required
           value={adminName}
@@ -104,7 +104,7 @@ export function RegisterForm() {
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Email</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Email</span>
         <input
           type="email"
           required
@@ -115,7 +115,7 @@ export function RegisterForm() {
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1.5 block text-[#9ca3af]">Password</span>
+        <span className="mb-1.5 block text-[#b9b2a5]">Password</span>
         <input
           type="password"
           required
@@ -136,14 +136,14 @@ export function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-[#9a5f53] py-3.5 text-sm font-bold uppercase tracking-wider text-[#f5f1e6] disabled:opacity-60"
+        className="w-full rounded-md bg-[#c6a15b] py-3.5 text-sm font-bold uppercase tracking-wider text-[#f2ede3] disabled:opacity-60"
       >
         {loading ? "Creating…" : "Create restaurant"}
       </button>
 
-      <p className="text-center text-sm text-[#9ca3af]">
+      <p className="text-center text-sm text-[#b9b2a5]">
         Already have an account?{" "}
-        <Link href="/login" className="text-[#d4a99a] hover:underline">
+        <Link href="/login" className="text-[#ddbe7e] hover:underline">
           Sign in
         </Link>
       </p>

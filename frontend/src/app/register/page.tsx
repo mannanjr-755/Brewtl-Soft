@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[var(--bg)] px-4 py-12 text-[var(--text)]">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(154,95,83,0.22),transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(198,161,91,0.22),transparent_55%)]" />
 
       <div className="relative w-full max-w-md">
         <Link href="/" className="mb-8 flex flex-col items-center text-center">
           <BrandLogo size="hero" />
-          <span className="font-display mt-3 text-3xl text-[var(--gold-bright)]">BON PANIER</span>
+          <span className="font-display mt-3 text-3xl text-[var(--gold-bright)]">BREWTL</span>
           <span className="mt-1 text-xs uppercase tracking-[0.25em] text-[var(--text-dim)]">
             Create your restaurant
           </span>

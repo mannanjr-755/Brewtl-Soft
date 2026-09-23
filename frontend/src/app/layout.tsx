@@ -17,11 +17,11 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "BON PANIER",
-    template: "%s · BON PANIER",
+    default: "BREWTL",
+    template: "%s · BREWTL",
   },
   description:
-    "BON PANIER — The French Bakery Cafe & Store kitchen dashboard.",
+    "BREWTL — Restaurant, cafe & store kitchen dashboard.",
   icons: {
     icon: [{ url: "/logo.png", type: "image/png" }],
     apple: [{ url: "/apple-touch-icon.png" }],

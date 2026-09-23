@@ -128,30 +128,30 @@ export function PaymentsManager() {
   }
 
   if (loading) {
-    return <p className="text-sm text-[#a8a29e]">Loading payments…</p>;
+    return <p className="text-sm text-[#a39b8c]">Loading payments…</p>;
   }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-white">Payments</h1>
-        <p className="mt-1 text-sm text-[#a8a29e]">
+        <p className="mt-1 text-sm text-[#a39b8c]">
           Record and track payments against orders, by method and status.
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Collected</p>
+          <p className="text-xs text-[#a39b8c]">Collected</p>
           <p className="mt-1 text-2xl font-semibold text-[#22c55e]">{formatMoney(collected)}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Pending</p>
+          <p className="text-xs text-[#a39b8c]">Pending</p>
           <p className="mt-1 text-2xl font-semibold text-[#f97316]">{formatMoney(pending)}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Outstanding on orders</p>
-          <p className="mt-1 text-2xl font-semibold text-[#e8c4b8]">{formatMoney(outstanding)}</p>
+          <p className="text-xs text-[#a39b8c]">Outstanding on orders</p>
+          <p className="mt-1 text-2xl font-semibold text-[#ead498]">{formatMoney(outstanding)}</p>
         </div>
       </div>
 
@@ -161,11 +161,11 @@ export function PaymentsManager() {
           <h2 className="font-medium text-white">Record payment</h2>
           <form onSubmit={createPayment} className="mt-4 space-y-3">
             <label className="block text-sm">
-              <span className="mb-1.5 block font-medium text-[#d6d3d1]">Order</span>
+              <span className="mb-1.5 block font-medium text-[#f2ede3]">Order</span>
               <select
                 value={form.orderId}
                 onChange={(e) => setForm({ ...form, orderId: e.target.value })}
-                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+                className="w-full rounded-xl border border-white/10 bg-[#1a2530] px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
               >
                 <option value="">No order (walk-in / other)</option>
                 {orders.map((o) => (
@@ -178,7 +178,7 @@ export function PaymentsManager() {
             </label>
             <div className="grid grid-cols-2 gap-3">
               <label className="block text-sm">
-                <span className="mb-1.5 block font-medium text-[#d6d3d1]">Amount</span>
+                <span className="mb-1.5 block font-medium text-[#f2ede3]">Amount</span>
                 <input
                   required
                   type="number"
@@ -187,15 +187,15 @@ export function PaymentsManager() {
                   value={form.amount}
                   onChange={(e) => setForm({ ...form, amount: e.target.value })}
                   placeholder="0"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
                 />
               </label>
               <label className="block text-sm">
-                <span className="mb-1.5 block font-medium text-[#d6d3d1]">Method</span>
+                <span className="mb-1.5 block font-medium text-[#f2ede3]">Method</span>
                 <select
                   value={form.method}
                   onChange={(e) => setForm({ ...form, method: e.target.value })}
-                  className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+                  className="w-full rounded-xl border border-white/10 bg-[#1a2530] px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
                 >
                   {METHODS.map((m) => (
                     <option key={m} value={m}>
@@ -206,11 +206,11 @@ export function PaymentsManager() {
               </label>
             </div>
             <label className="block text-sm">
-              <span className="mb-1.5 block font-medium text-[#d6d3d1]">Status</span>
+              <span className="mb-1.5 block font-medium text-[#f2ede3]">Status</span>
               <select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
-                className="w-full rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+                className="w-full rounded-xl border border-white/10 bg-[#1a2530] px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
               >
                 {STATUSES.map((s) => (
                   <option key={s} value={s}>
@@ -223,18 +223,18 @@ export function PaymentsManager() {
               value={form.reference}
               onChange={(e) => setForm({ ...form, reference: e.target.value })}
               placeholder="Reference / transaction ID"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <input
               value={form.note}
               onChange={(e) => setForm({ ...form, note: e.target.value })}
               placeholder="Note"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <button
               type="submit"
               disabled={busy}
-              className="w-full rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+              className="w-full rounded-xl bg-[#c6a15b] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
             >
               {busy ? "Recording…" : "Record payment"}
             </button>
@@ -244,7 +244,7 @@ export function PaymentsManager() {
         {/* Payments list */}
         <section className="space-y-2">
           {payments.length === 0 && (
-            <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#78716c]">
+            <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#8a8478]">
               No payments recorded yet.
             </p>
           )}
@@ -256,9 +256,9 @@ export function PaymentsManager() {
               <div className="min-w-0">
                 <p className="font-medium text-white">
                   {p.order ? p.order.orderNumber : "Walk-in / other"}
-                  {p.order && <span className="text-[#a8a29e]"> · {p.order.customerName}</span>}
+                  {p.order && <span className="text-[#a39b8c]"> · {p.order.customerName}</span>}
                 </p>
-                <p className="text-xs text-[#78716c]">
+                <p className="text-xs text-[#8a8478]">
                   {format(new Date(p.createdAt), "dd MMM yyyy, HH:mm")} · {p.method.replace("_", " ")}
                   {p.reference ? ` · ${p.reference}` : ""}
                   {p.note ? ` · ${p.note}` : ""}
@@ -268,11 +268,11 @@ export function PaymentsManager() {
                 <span className={`rounded-full px-2.5 py-1 font-medium ring-1 ${STATUS_STYLE[p.status] ?? ""}`}>
                   {p.status[0] + p.status.slice(1).toLowerCase()}
                 </span>
-                <span className="font-semibold text-[#e8c4b8]">{formatMoney(p.amount)}</span>
+                <span className="font-semibold text-[#ead498]">{formatMoney(p.amount)}</span>
                 <select
                   value={p.status}
                   onChange={(e) => changeStatus(p, e.target.value)}
-                  className="rounded-lg border border-white/10 bg-[#0c0f14] px-2 py-1.5 text-xs outline-none focus:border-[#9a5f53]"
+                  className="rounded-lg border border-white/10 bg-[#1a2530] px-2 py-1.5 text-xs outline-none focus:border-[#c6a15b]"
                 >
                   {STATUSES.map((s) => (
                     <option key={s} value={s}>

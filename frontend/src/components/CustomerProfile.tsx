@@ -52,7 +52,7 @@ type FavItem = { name: string; quantity: number; revenue: number };
 const SEGMENT_STYLES: Record<string, { label: string; color: string; bg: string; desc: string }> = {
   NEW: { label: "New Customer", color: "text-[#3b82f6]", bg: "bg-[#3b82f6]/15", desc: "Just started ordering" },
   REGULAR: { label: "Regular Customer", color: "text-[#22c55e]", bg: "bg-[#22c55e]/15", desc: "Multiple completed orders" },
-  VIP: { label: "VIP Customer", color: "text-[#d4a99a]", bg: "bg-[#9a5f53]/15", desc: "High spending / frequent ordering" },
+  VIP: { label: "VIP Customer", color: "text-[#ddbe7e]", bg: "bg-[#c6a15b]/15", desc: "High spending / frequent ordering" },
   INACTIVE: { label: "Inactive", color: "text-[#ef4444]", bg: "bg-[#ef4444]/15", desc: "No order in 60+ days" },
 };
 
@@ -137,7 +137,7 @@ export function CustomerProfile() {
   }
 
   if (loading) {
-    return <p className="text-sm text-[#a8a29e]">Loading customer profile…</p>;
+    return <p className="text-sm text-[#a39b8c]">Loading customer profile…</p>;
   }
 
   if (!data) return null;
@@ -148,15 +148,15 @@ export function CustomerProfile() {
   return (
     <div className="space-y-6">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs text-[#78716c]">
-        <Link href="/dashboard/customers" className="hover:text-[#d4a99a] transition">Customers</Link>
+      <div className="flex items-center gap-2 text-xs text-[#8a8478]">
+        <Link href="/dashboard/customers" className="hover:text-[#ddbe7e] transition">Customers</Link>
         <span>/</span>
-        <span className="text-[#9ca3af]">{customer.name}</span>
+        <span className="text-[#b9b2a5]">{customer.name}</span>
       </div>
 
       {/* Customer header */}
       <div className="flex flex-wrap items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-2xl font-bold text-[#d4a99a]">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#c6a15b]/15 text-2xl font-bold text-[#ddbe7e]">
           {customer.name.slice(0, 1).toUpperCase()}
         </div>
         <div className="min-w-0 flex-1">
@@ -166,8 +166,8 @@ export function CustomerProfile() {
               {seg.label}
             </span>
           </div>
-          <p className="mt-0.5 text-sm text-[#78716c]">{seg.desc}</p>
-          <div className="mt-2 flex flex-wrap gap-4 text-sm text-[#9ca3af]">
+          <p className="mt-0.5 text-sm text-[#8a8478]">{seg.desc}</p>
+          <div className="mt-2 flex flex-wrap gap-4 text-sm text-[#b9b2a5]">
             {customer.phone && <span>📱 {customer.phone}</span>}
             {customer.email && <span>✉️ {customer.email}</span>}
             <span>🗓 Member since {format(new Date(customer.createdAt), "dd MMM yyyy")}</span>
@@ -175,7 +175,7 @@ export function CustomerProfile() {
         </div>
         <Link
           href="/dashboard/customers"
-          className="rounded-xl border border-white/10 px-4 py-2 text-sm text-[#9ca3af] hover:bg-white/5 hover:text-white transition"
+          className="rounded-xl border border-white/10 px-4 py-2 text-sm text-[#b9b2a5] hover:bg-white/5 hover:text-white transition"
         >
           ← Back to list
         </Link>
@@ -184,16 +184,16 @@ export function CustomerProfile() {
       {/* Stats cards */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {[
-          { label: "Total Orders", value: String(stats.totalOrders), icon: "📋", tone: "text-[#d4a99a] bg-[#9a5f53]/15" },
+          { label: "Total Orders", value: String(stats.totalOrders), icon: "📋", tone: "text-[#ddbe7e] bg-[#c6a15b]/15" },
           { label: "Total Spent", value: formatMoney(stats.totalSpent), icon: "💰", tone: "text-[#22c55e] bg-[#22c55e]/15" },
           { label: "Avg Order Value", value: formatMoney(stats.avgOrderValue), icon: "📊", tone: "text-[#3b82f6] bg-[#3b82f6]/15" },
           { label: "First Order", value: stats.firstOrderAt ? format(new Date(stats.firstOrderAt), "dd MMM yy") : "—", icon: "🎂", tone: "text-[#a855f7] bg-[#a855f7]/15" },
           { label: "Last Order", value: stats.lastOrderAt ? format(new Date(stats.lastOrderAt), "dd MMM yy") : "—", icon: "🕐", tone: "text-[#f97316] bg-[#f97316]/15" },
         ].map((card) => (
-          <div key={card.label} className="rounded-2xl border border-[#2a2a2a] bg-[#141414] p-4">
+          <div key={card.label} className="rounded-2xl border border-[#2e3b47] bg-[#1a2530] p-4">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs text-[#9ca3af]">{card.label}</p>
+                <p className="text-xs text-[#b9b2a5]">{card.label}</p>
                 <p className="mt-1 text-xl font-semibold text-white">{card.value}</p>
               </div>
               <span className={`flex h-9 w-9 items-center justify-center rounded-full text-base ${card.tone}`}>
@@ -208,9 +208,9 @@ export function CustomerProfile() {
         {/* Order history */}
         <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <h2 className="font-medium text-white">Order History</h2>
-          <p className="mt-0.5 text-xs text-[#78716c]">{stats.totalOrders} total orders · {stats.completedOrders} completed</p>
+          <p className="mt-0.5 text-xs text-[#8a8478]">{stats.totalOrders} total orders · {stats.completedOrders} completed</p>
           {recentActivity.length === 0 ? (
-            <p className="mt-4 rounded-xl border border-dashed border-white/10 px-3 py-8 text-center text-sm text-[#78716c]">
+            <p className="mt-4 rounded-xl border border-dashed border-white/10 px-3 py-8 text-center text-sm text-[#8a8478]">
               No orders yet.
             </p>
           ) : (
@@ -218,14 +218,14 @@ export function CustomerProfile() {
               {recentActivity.map((o) => (
                 <div key={o.id}>
                   <div
-                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#0e0e0e] px-4 py-3 transition hover:border-[#9a5f53]/30 cursor-pointer"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#151e28] px-4 py-3 transition hover:border-[#c6a15b]/30 cursor-pointer"
                     onClick={() => toggleOrderItems(o.id)}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`h-2 w-2 shrink-0 rounded-full ${STATUS_DOT[o.status] ?? "bg-[#666]"}`} />
                       <div>
                         <p className="text-sm font-medium text-white">{o.orderNumber}</p>
-                        <p className="text-[11px] text-[#78716c]">
+                        <p className="text-[11px] text-[#8a8478]">
                           Table {o.tableNumber} · {format(new Date(o.createdAt), "dd MMM, HH:mm")} · {o.itemCount} item{o.itemCount !== 1 ? "s" : ""}
                         </p>
                       </div>
@@ -239,17 +239,17 @@ export function CustomerProfile() {
                       }`}>
                         {STATUS_LABELS[o.status as OrderStatus] ?? o.status}
                       </span>
-                      <span className="text-sm font-semibold text-[#e8c4b8]">{formatMoney(o.total)}</span>
+                      <span className="text-sm font-semibold text-[#ead498]">{formatMoney(o.total)}</span>
                     </div>
                   </div>
                   {expandedOrder === o.id && expandedItems[o.id] && (
-                    <div className="ml-5 mt-1 rounded-lg border border-white/5 bg-[#0a0a0a] p-3">
+                    <div className="ml-5 mt-1 rounded-lg border border-white/5 bg-[#101820] p-3">
                       {expandedItems[o.id].map((item) => (
                         <div key={item.id} className="flex items-center justify-between py-1 text-xs">
-                          <span className="text-[#d1d5db]">
-                            <span className="text-[#9ca3af]">{item.quantity}×</span> {item.itemName}
+                          <span className="text-[#f2ede3]">
+                            <span className="text-[#b9b2a5]">{item.quantity}×</span> {item.itemName}
                           </span>
-                          <span className="text-[#e8c4b8]">{formatMoney(item.subtotal)}</span>
+                          <span className="text-[#ead498]">{formatMoney(item.subtotal)}</span>
                         </div>
                       ))}
                     </div>
@@ -266,16 +266,16 @@ export function CustomerProfile() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
             <h3 className="font-medium text-white">Frequently Ordered</h3>
             {favoriteItems.length === 0 ? (
-              <p className="mt-3 text-xs text-[#78716c]">No items ordered yet.</p>
+              <p className="mt-3 text-xs text-[#8a8478]">No items ordered yet.</p>
             ) : (
               <ul className="mt-3 space-y-2.5">
                 {favoriteItems.map((item, idx) => (
                   <li key={item.name} className="flex items-center gap-3 text-sm">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-[10px] font-bold text-[#e8c4b8]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#c6a15b]/15 text-[10px] font-bold text-[#ead498]">
                       {idx + 1}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[#d1d5db]">{item.name}</span>
-                    <span className="text-xs text-[#9ca3af]">{item.quantity}×</span>
+                    <span className="min-w-0 flex-1 truncate text-[#f2ede3]">{item.name}</span>
+                    <span className="text-xs text-[#b9b2a5]">{item.quantity}×</span>
                   </li>
                 ))}
               </ul>
@@ -290,13 +290,13 @@ export function CustomerProfile() {
                 <button
                   type="button"
                   onClick={() => { setEditingNotes(true); setNotesValue(customer.notes ?? ""); }}
-                  className="text-xs text-[#9a5f53] hover:text-[#d4a99a] transition"
+                  className="text-xs text-[#c6a15b] hover:text-[#ddbe7e] transition"
                 >
                   Edit
                 </button>
               )}
             </div>
-            <p className="mt-1 text-[10px] uppercase tracking-wider text-[#78716c]">Internal only — not visible to customers</p>
+            <p className="mt-1 text-[10px] uppercase tracking-wider text-[#8a8478]">Internal only — not visible to customers</p>
             {editingNotes ? (
               <div className="mt-3">
                 <textarea
@@ -304,29 +304,29 @@ export function CustomerProfile() {
                   onChange={(e) => setNotesValue(e.target.value)}
                   rows={4}
                   placeholder="e.g. Prefers less spicy food, usually orders family meal…"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#9a5f53] resize-none"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white outline-none focus:border-[#c6a15b] resize-none"
                 />
                 <div className="mt-2 flex gap-2">
                   <button
                     type="button"
                     disabled={savingNotes}
                     onClick={saveNotes}
-                    className="rounded-lg bg-[#9a5f53] px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
+                    className="rounded-lg bg-[#c6a15b] px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
                   >
                     {savingNotes ? "Saving…" : "Save"}
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingNotes(false)}
-                    className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#9ca3af] hover:bg-white/5"
+                    className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#b9b2a5] hover:bg-white/5"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="mt-3 text-sm text-[#d1d5db]">
-                {customer.notes || <span className="text-[#78716c] italic">No notes yet. Click Edit to add internal notes about this customer.</span>}
+              <p className="mt-3 text-sm text-[#f2ede3]">
+                {customer.notes || <span className="text-[#8a8478] italic">No notes yet. Click Edit to add internal notes about this customer.</span>}
               </p>
             )}
           </div>
@@ -336,16 +336,16 @@ export function CustomerProfile() {
             <h3 className="font-medium text-white">Contact Info</h3>
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <span className="text-[#9ca3af]">Phone</span>
+                <span className="text-[#b9b2a5]">Phone</span>
                 <span className="text-white">{customer.phone || "—"}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9ca3af]">Email</span>
+                <span className="text-[#b9b2a5]">Email</span>
                 <span className="text-white">{customer.email || "—"}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[#9ca3af]">Customer ID</span>
-                <span className="font-mono text-[10px] text-[#78716c]">{customer.id}</span>
+                <span className="text-[#b9b2a5]">Customer ID</span>
+                <span className="font-mono text-[10px] text-[#8a8478]">{customer.id}</span>
               </div>
             </div>
           </div>

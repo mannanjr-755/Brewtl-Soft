@@ -34,7 +34,7 @@ const emptyForm = { name: "", phone: "", email: "", notes: "" };
 const SEGMENT_STYLES: Record<string, { label: string; color: string; bg: string }> = {
   NEW: { label: "New", color: "text-[#3b82f6]", bg: "bg-[#3b82f6]/15" },
   REGULAR: { label: "Regular", color: "text-[#22c55e]", bg: "bg-[#22c55e]/15" },
-  VIP: { label: "VIP", color: "text-[#d4a99a]", bg: "bg-[#9a5f53]/15" },
+  VIP: { label: "VIP", color: "text-[#ddbe7e]", bg: "bg-[#c6a15b]/15" },
   INACTIVE: { label: "Inactive", color: "text-[#ef4444]", bg: "bg-[#ef4444]/15" },
 };
 
@@ -152,7 +152,7 @@ export function CustomersManager() {
   }
 
   if (loading) {
-    return <p className="text-sm text-[#a8a29e]">Loading customers…</p>;
+    return <p className="text-sm text-[#a39b8c]">Loading customers…</p>;
   }
 
   return (
@@ -160,7 +160,7 @@ export function CustomersManager() {
       {/* Delete confirmation modal */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-[#2a2a2a] bg-[#141414] shadow-2xl shadow-black/50">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-[#2e3b47] bg-[#1a2530] shadow-2xl shadow-black/50">
             <div className="flex items-center gap-3 bg-red-500/10 px-5 py-4">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-500/20">
                 <svg className="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
@@ -169,18 +169,18 @@ export function CustomersManager() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-white">Delete Customer</p>
-                <p className="text-xs text-[#9ca3af]">This action cannot be undone</p>
+                <p className="text-xs text-[#b9b2a5]">This action cannot be undone</p>
               </div>
             </div>
             <div className="px-5 py-4">
-              <p className="text-sm text-[#d1d5db]">
+              <p className="text-sm text-[#f2ede3]">
                 Are you sure you want to delete{" "}
                 <span className="font-semibold text-white">{deleteTarget.name}</span>?
                 Their order history will remain intact.
               </p>
             </div>
-            <div className="flex gap-3 border-t border-[#2a2a2a] px-5 py-4">
-              <button type="button" onClick={() => setDeleteTarget(null)} className="flex-1 rounded-xl border border-[#2a2a2a] bg-[#1a1a1a] py-2.5 text-sm font-medium text-[#d1d5db] transition hover:bg-[#222]">
+            <div className="flex gap-3 border-t border-[#2e3b47] px-5 py-4">
+              <button type="button" onClick={() => setDeleteTarget(null)} className="flex-1 rounded-xl border border-[#2e3b47] bg-[#1a2530] py-2.5 text-sm font-medium text-[#f2ede3] transition hover:bg-[#222]">
                 Cancel
               </button>
               <button type="button" disabled={deleting} onClick={deleteCustomer} className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-semibold text-white transition hover:bg-red-600 disabled:opacity-50">
@@ -195,7 +195,7 @@ export function CustomersManager() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-white">Customers</h1>
-          <p className="mt-1 text-sm text-[#a8a29e]">
+          <p className="mt-1 text-sm text-[#a39b8c]">
             Manage your customer relationships, track orders and spending.
           </p>
         </div>
@@ -204,7 +204,7 @@ export function CustomersManager() {
             type="button"
             onClick={syncFromOrders}
             disabled={busy}
-            className="rounded-xl border border-[#9a5f53]/50 bg-[#9a5f53]/10 px-4 py-2 text-sm font-semibold text-[#d4a99a] disabled:opacity-50"
+            className="rounded-xl border border-[#c6a15b]/50 bg-[#c6a15b]/10 px-4 py-2 text-sm font-semibold text-[#ddbe7e] disabled:opacity-50"
           >
             {busy ? "Working…" : "Sync from orders"}
           </button>
@@ -221,37 +221,37 @@ export function CustomersManager() {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Full name"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <input
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
               placeholder="Phone"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <input
               type="email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               placeholder="Email"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <textarea
               rows={3}
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
               placeholder="Notes (preferences, allergies…)"
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <div className="flex gap-2">
-              <button type="submit" disabled={busy} className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50">
+              <button type="submit" disabled={busy} className="rounded-xl bg-[#c6a15b] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50">
                 {editing ? "Save changes" : "Add customer"}
               </button>
               {editing && (
                 <button
                   type="button"
                   onClick={() => { setEditing(null); setForm(emptyForm); }}
-                  className="rounded-xl border border-white/10 px-4 py-2 text-sm text-[#d6d3d1]"
+                  className="rounded-xl border border-white/10 px-4 py-2 text-sm text-[#f2ede3]"
                 >
                   Cancel
                 </button>
@@ -268,7 +268,7 @@ export function CustomersManager() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, phone, or email…"
-              className="min-w-[200px] flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="min-w-[200px] flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             />
             <select
               value={`${sortBy}-${sortOrder}`}
@@ -277,7 +277,7 @@ export function CustomersManager() {
                 setSortBy(s);
                 setSortOrder(o as "asc" | "desc");
               }}
-              className="rounded-xl border border-white/10 bg-[#0c0f14] px-3 py-2 text-sm outline-none focus:border-[#9a5f53]"
+              className="rounded-xl border border-white/10 bg-[#1a2530] px-3 py-2 text-sm outline-none focus:border-[#c6a15b]"
             >
               <option value="createdAt-desc">Newest first</option>
               <option value="createdAt-asc">Oldest first</option>
@@ -308,8 +308,8 @@ export function CustomersManager() {
                     segmentFilter === s.key
                       ? s.key && SEGMENT_STYLES[s.key]
                         ? `${SEGMENT_STYLES[s.key].bg} ${SEGMENT_STYLES[s.key].color}`
-                        : "bg-[#9a5f53]/20 text-[#d4a99a]"
-                      : "border border-[#2a2a2a] text-[#9ca3af] hover:border-[#9a5f53]/40 hover:text-[#d4a99a]"
+                        : "bg-[#c6a15b]/20 text-[#ddbe7e]"
+                      : "border border-[#2e3b47] text-[#b9b2a5] hover:border-[#c6a15b]/40 hover:text-[#ddbe7e]"
                   }`}
                 >
                   {s.label} ({s.count})
@@ -320,7 +320,7 @@ export function CustomersManager() {
 
           {/* Customer rows */}
           {customers.length === 0 && (
-            <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#78716c]">
+            <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#8a8478]">
               No customers found. Add one manually or sync from orders.
             </p>
           )}
@@ -330,46 +330,46 @@ export function CustomersManager() {
               return (
                 <div
                   key={c.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-[#9a5f53]/30"
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:border-[#c6a15b]/30"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#9a5f53]/15 text-sm font-bold text-[#d4a99a]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#c6a15b]/15 text-sm font-bold text-[#ddbe7e]">
                         {c.name.slice(0, 1).toUpperCase()}
                       </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <Link href={`/dashboard/customers/${c.id}`} className="font-medium text-white hover:text-[#d4a99a] transition">
+                          <Link href={`/dashboard/customers/${c.id}`} className="font-medium text-white hover:text-[#ddbe7e] transition">
                             {c.name}
                           </Link>
                           <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${seg.bg} ${seg.color}`}>
                             {seg.label}
                           </span>
                         </div>
-                        <p className="truncate text-xs text-[#78716c]">
+                        <p className="truncate text-xs text-[#8a8478]">
                           {[c.phone, c.email].filter(Boolean).join(" · ") || "No contact info"}
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-[#a8a29e]">
+                    <div className="flex items-center gap-4 text-xs text-[#a39b8c]">
                       <div className="text-right">
                         <p className="font-semibold text-white">{c.orderCount}</p>
-                        <p className="text-[#78716c]">orders</p>
+                        <p className="text-[#8a8478]">orders</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-[#e8c4b8]">{formatMoney(c.totalSpent)}</p>
-                        <p className="text-[#78716c]">spent</p>
+                        <p className="font-semibold text-[#ead498]">{formatMoney(c.totalSpent)}</p>
+                        <p className="text-[#8a8478]">spent</p>
                       </div>
                       <div className="hidden text-right sm:block">
                         <p className="text-white">
                           {c.lastOrderAt ? format(new Date(c.lastOrderAt), "dd MMM") : "—"}
                         </p>
-                        <p className="text-[#78716c]">last order</p>
+                        <p className="text-[#8a8478]">last order</p>
                       </div>
                       <div className="flex gap-2">
                         <Link
                           href={`/dashboard/customers/${c.id}`}
-                          className="rounded-lg bg-[#9a5f53]/10 px-2.5 py-1.5 text-[#d4a99a] ring-1 ring-[#9a5f53]/30 hover:bg-[#9a5f53]/20"
+                          className="rounded-lg bg-[#c6a15b]/10 px-2.5 py-1.5 text-[#ddbe7e] ring-1 ring-[#c6a15b]/30 hover:bg-[#c6a15b]/20"
                         >
                           View
                         </Link>
@@ -402,18 +402,18 @@ export function CustomersManager() {
                 type="button"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#9ca3af] hover:bg-white/5 disabled:opacity-30"
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#b9b2a5] hover:bg-white/5 disabled:opacity-30"
               >
                 Previous
               </button>
-              <span className="text-xs text-[#9ca3af]">
+              <span className="text-xs text-[#b9b2a5]">
                 Page {page} of {totalPages}
               </span>
               <button
                 type="button"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#9ca3af] hover:bg-white/5 disabled:opacity-30"
+                className="rounded-lg border border-white/10 px-3 py-1.5 text-xs text-[#b9b2a5] hover:bg-white/5 disabled:opacity-30"
               >
                 Next
               </button>

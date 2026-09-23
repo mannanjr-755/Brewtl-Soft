@@ -308,7 +308,7 @@ export function ReportsManager() {
                 {data.daily.map((d) => (
                   <div key={d.date} className="group flex flex-1 flex-col items-center gap-1">
                     <div
-                      className="w-full rounded-t bg-gradient-to-t from-[#9a5f53]/30 to-[#e8c4b8]"
+                      className="w-full rounded-t bg-gradient-to-t from-[#c6a15b]/30 to-[#ead498]"
                       style={{ height: `${Math.max(2, (d.revenue / maxDailyRevenue) * 100)}%` }}
                       title={`${d.date}: ${formatMoney(d.revenue)}`}
                     />
@@ -318,7 +318,7 @@ export function ReportsManager() {
                   </div>
                 ))}
               </div>
-              <p className="mt-2 text-right text-sm font-semibold text-[#e8c4b8]">
+              <p className="mt-2 text-right text-sm font-semibold text-[#ead498]">
                 {formatMoney(data.summary.revenue)}
               </p>
             </section>
@@ -333,14 +333,14 @@ export function ReportsManager() {
                   return (
                     <li key={s}>
                       <div className="mb-1 flex items-center justify-between text-xs">
-                        <span className="flex items-center gap-2 text-[#d6d3d1]">
+                        <span className="flex items-center gap-2 text-[#f2ede3]">
                           <span
                             className="h-2 w-2 rounded-full"
                             style={{ background: STATUS_COLOR[s] }}
                           />
                           {STATUS_LABELS[s as OrderStatus]}
                         </span>
-                        <span className="text-[#a8a29e]">
+                        <span className="text-[#a39b8c]">
                           {count} · {formatMoney(row?.revenue ?? 0)}
                         </span>
                       </div>
@@ -361,10 +361,10 @@ export function ReportsManager() {
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Top selling items</h2>
               {data.topItems.length === 0 ? (
-                <p className="mt-3 text-sm text-[#78716c]">No completed sales in this period.</p>
+                <p className="mt-3 text-sm text-[#8a8478]">No completed sales in this period.</p>
               ) : (
                 <table className="mt-3 w-full text-left text-sm">
-                  <thead className="border-b border-white/10 text-xs text-[#a8a29e]">
+                  <thead className="border-b border-white/10 text-xs text-[#a39b8c]">
                     <tr>
                       <th className="pb-2 font-medium">Item</th>
                       <th className="pb-2 font-medium">Sold</th>
@@ -375,13 +375,13 @@ export function ReportsManager() {
                     {data.topItems.map((t, i) => (
                       <tr key={t.name} className="border-b border-white/5">
                         <td className="py-2.5 text-white">
-                          <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#9a5f53]/15 text-[10px] font-bold text-[#e8c4b8]">
+                          <span className="mr-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#c6a15b]/15 text-[10px] font-bold text-[#ead498]">
                             {i + 1}
                           </span>
                           {t.name}
                         </td>
-                        <td className="py-2.5 text-[#a8a29e]">{t.quantity}</td>
-                        <td className="py-2.5 text-right font-medium text-[#e8c4b8]">
+                        <td className="py-2.5 text-[#a39b8c]">{t.quantity}</td>
+                        <td className="py-2.5 text-right font-medium text-[#ead498]">
                           {formatMoney(t.revenue)}
                         </td>
                       </tr>
@@ -394,7 +394,7 @@ export function ReportsManager() {
             <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <h2 className="font-medium text-white">Revenue by category</h2>
               {data.categoryBreakdown.length === 0 ? (
-                <p className="mt-3 text-sm text-[#78716c]">No completed sales in this period.</p>
+                <p className="mt-3 text-sm text-[#8a8478]">No completed sales in this period.</p>
               ) : (
                 <ul className="mt-3 space-y-3">
                   {data.categoryBreakdown.map((c) => {
@@ -405,14 +405,14 @@ export function ReportsManager() {
                     return (
                       <li key={c.name}>
                         <div className="mb-1 flex items-center justify-between text-xs">
-                          <span className="text-[#d6d3d1]">{c.name}</span>
-                          <span className="text-[#a8a29e]">
+                          <span className="text-[#f2ede3]">{c.name}</span>
+                          <span className="text-[#a39b8c]">
                             {c.quantity} sold · {formatMoney(c.revenue)}
                           </span>
                         </div>
                         <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-[#9a5f53] to-[#e8c4b8]"
+                            className="h-full rounded-full bg-gradient-to-r from-[#c6a15b] to-[#ead498]"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -429,7 +429,7 @@ export function ReportsManager() {
               Orders in period
             </h2>
             <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="border-b border-white/10 bg-white/[0.03] text-xs text-[#a8a29e]">
+              <thead className="border-b border-white/10 bg-white/[0.03] text-xs text-[#a39b8c]">
                 <tr>
                   <th className="px-4 py-3 font-medium">Order</th>
                   <th className="px-4 py-3 font-medium">Customer</th>
@@ -442,7 +442,7 @@ export function ReportsManager() {
               <tbody>
                 {data.recentOrders.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-sm text-[#78716c]">
+                    <td colSpan={6} className="px-4 py-8 text-center text-sm text-[#8a8478]">
                       No orders in this period.
                     </td>
                   </tr>
@@ -450,8 +450,8 @@ export function ReportsManager() {
                 {data.recentOrders.map((o) => (
                   <tr key={o.id} className="border-b border-white/5">
                     <td className="px-4 py-3 font-medium text-white">{o.orderNumber}</td>
-                    <td className="px-4 py-3 text-[#d6d3d1]">{o.customerName}</td>
-                    <td className="px-4 py-3 text-[#a8a29e]">
+                    <td className="px-4 py-3 text-[#f2ede3]">{o.customerName}</td>
+                    <td className="px-4 py-3 text-[#a39b8c]">
                       {tableLabel(o.customerName, o.tableNumber)}
                     </td>
                     <td className="px-4 py-3">
@@ -463,8 +463,8 @@ export function ReportsManager() {
                         {STATUS_LABELS[o.status as OrderStatus] ?? o.status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-[#a8a29e]">{o.itemCount}</td>
-                    <td className="px-4 py-3 text-right font-medium text-[#e8c4b8]">
+                    <td className="px-4 py-3 text-[#a39b8c]">{o.itemCount}</td>
+                    <td className="px-4 py-3 text-right font-medium text-[#ead498]">
                       {formatMoney(o.total)}
                     </td>
                   </tr>

@@ -105,7 +105,7 @@ export function DashboardSidebar({
         <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-[var(--gold)]/40 shadow-[var(--shadow)]">
           <Image
             src="/logo.png"
-            alt="BON PANIER"
+            alt="BREWTL"
             width={40}
             height={40}
             className="h-full w-full object-cover"
@@ -118,7 +118,7 @@ export function DashboardSidebar({
               {restaurantName}
             </p>
             <p className="text-[10px] uppercase tracking-[0.2em] text-[var(--text-dim)]">
-              Bakery Cafe
+              Kitchen Dashboard
             </p>
           </div>
         )}

@@ -86,30 +86,30 @@ export function InventoryManager() {
   }
 
   if (loading) {
-    return <p className="text-sm text-[#a8a29e]">Loading inventory…</p>;
+    return <p className="text-sm text-[#a39b8c]">Loading inventory…</p>;
   }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-white">Inventory</h1>
-        <p className="mt-1 text-sm text-[#a8a29e]">
+        <p className="mt-1 text-sm text-[#a39b8c]">
           Track stock for menu items. Items without a stock count are not tracked.
         </p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Tracked items</p>
+          <p className="text-xs text-[#a39b8c]">Tracked items</p>
           <p className="mt-1 text-2xl font-semibold text-white">{tracked.length}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Low / out of stock</p>
+          <p className="text-xs text-[#a39b8c]">Low / out of stock</p>
           <p className="mt-1 text-2xl font-semibold text-red-300">{lowStock.length}</p>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-          <p className="text-xs text-[#a8a29e]">Stock value</p>
-          <p className="mt-1 text-2xl font-semibold text-[#e8c4b8]">{formatMoney(totalValue)}</p>
+          <p className="text-xs text-[#a39b8c]">Stock value</p>
+          <p className="mt-1 text-2xl font-semibold text-[#ead498]">{formatMoney(totalValue)}</p>
         </div>
       </div>
 
@@ -119,8 +119,8 @@ export function InventoryManager() {
           onClick={() => setFilter("all")}
           className={`rounded-lg px-3 py-1.5 text-xs ${
             filter === "all"
-              ? "bg-[#9a5f53]/20 text-[#d4a99a] ring-1 ring-[#9a5f53]/40"
-              : "border border-white/10 text-[#a8a29e]"
+              ? "bg-[#c6a15b]/20 text-[#ddbe7e] ring-1 ring-[#c6a15b]/40"
+              : "border border-white/10 text-[#a39b8c]"
           }`}
         >
           All items
@@ -131,7 +131,7 @@ export function InventoryManager() {
           className={`rounded-lg px-3 py-1.5 text-xs ${
             filter === "low"
               ? "bg-red-500/15 text-red-300 ring-1 ring-red-500/40"
-              : "border border-white/10 text-[#a8a29e]"
+              : "border border-white/10 text-[#a39b8c]"
           }`}
         >
           Low stock only ({lowStock.length})
@@ -139,14 +139,14 @@ export function InventoryManager() {
       </div>
 
       {visible.length === 0 && (
-        <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#78716c]">
+        <p className="rounded-2xl border border-dashed border-white/10 px-4 py-10 text-center text-sm text-[#8a8478]">
           {filter === "low" ? "Nothing is low on stock right now." : "No menu items found."}
         </p>
       )}
 
       {[...grouped.entries()].map(([catName, list]) => (
         <section key={catName}>
-          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#a8a29e]">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-[#a39b8c]">
             {catName}
           </h3>
           <div className="space-y-2">
@@ -167,7 +167,7 @@ export function InventoryManager() {
                         </span>
                       )}
                     </p>
-                    <p className="text-xs text-[#78716c]">
+                    <p className="text-xs text-[#8a8478]">
                       {formatMoney(item.price)} · {item.available ? "Available" : "Hidden"}
                     </p>
                   </div>
@@ -202,7 +202,7 @@ export function InventoryManager() {
                             },
                           }))
                         }
-                        className="w-16 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#9a5f53] disabled:opacity-40"
+                        className="w-16 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#c6a15b] disabled:opacity-40"
                       />
                       <button
                         type="button"
@@ -219,7 +219,7 @@ export function InventoryManager() {
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs text-[#a8a29e]">
+                    <div className="flex items-center gap-2 text-xs text-[#a39b8c]">
                       <span>Low at</span>
                       <input
                         type="number"
@@ -234,7 +234,7 @@ export function InventoryManager() {
                             },
                           }))
                         }
-                        className="w-14 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#9a5f53]"
+                        className="w-14 rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-sm outline-none focus:border-[#c6a15b]"
                       />
                     </div>
 
@@ -247,7 +247,7 @@ export function InventoryManager() {
                             [item.id]: { ...draft(item), qty: 0 },
                           }))
                         }
-                        className="rounded-lg border border-[#9a5f53]/50 bg-[#9a5f53]/10 px-2.5 py-1.5 text-xs font-semibold text-[#d4a99a]"
+                        className="rounded-lg border border-[#c6a15b]/50 bg-[#c6a15b]/10 px-2.5 py-1.5 text-xs font-semibold text-[#ddbe7e]"
                       >
                         Start tracking
                       </button>
@@ -266,7 +266,7 @@ export function InventoryManager() {
                       type="button"
                       disabled={savingId === item.id}
                       onClick={() => save(item)}
-                      className="rounded-xl bg-[#9a5f53] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
+                      className="rounded-xl bg-[#c6a15b] px-4 py-2 text-sm font-semibold text-[#000000] disabled:opacity-50"
                     >
                       {savingId === item.id ? "Saving…" : "Save"}
                     </button>

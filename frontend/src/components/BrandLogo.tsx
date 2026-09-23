@@ -27,7 +27,7 @@ export function BrandLogo({
       >
         <Image
           src="/logo.png"
-          alt="BON PANIER"
+          alt="BREWTL"
           width={s.img}
           height={s.img}
           className={
@@ -41,10 +41,10 @@ export function BrandLogo({
       {showWordmark && (
         <>
           <span className="font-display mt-3 text-3xl text-[var(--gold-bright)]">
-            BON PANIER
+            BREWTL
           </span>
           <span className="mt-1 text-xs uppercase tracking-[0.25em] text-[var(--text-dim)]">
-            The French Bakery Cafe & Store
+            Restaurant Kitchen Dashboard
           </span>
         </>
       )}
