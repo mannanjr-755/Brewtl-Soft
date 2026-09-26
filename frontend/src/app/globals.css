@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --font-dm-sans: "DM Sans";
+  --font-playfair: "Playfair Display";
+}
+
 /* BREWTL brand palette from logo asset (deep ink #101820 + warm barley gold) */
 :root,
 [data-theme="light"] {
