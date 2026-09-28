@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { Pencil, Printer, Search } from "lucide-react";
 import { printOrderReceipt, type ReceiptRestaurant } from "@/lib/printReceipt";
 import { toast } from "@/components/ToastProvider";
-import { formatMoney, nextStatus, ORDER_STATUSES, STATUS_LABELS, type OrderStatus } from "@/lib/utils";
+import { formatMoney, isReportedOrder, nextStatus, ORDER_STATUSES, STATUS_LABELS, type OrderStatus } from "@/lib/utils";
 
 type OrderItem = {
   id: string;
@@ -69,6 +69,7 @@ export function OrdersBoard() {
   const [tables, setTables] = useState<TableRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [printingId, setPrintingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [lastFetch, setLastFetch] = useState("");
@@ -148,8 +149,50 @@ export function OrdersBoard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [search]);
 
-  function handlePrintReceipt(order: Order) {
-    printOrderReceipt(order, restaurantInfo ?? undefined);
+  /**
+   * "Print Receipt" — saves the order to Reports first, then prints.
+   *
+   * Only *finished* orders (Completed / already Reported) are auto-saved, so
+   * printing a receipt for an order still in the kitchen never pulls it off
+   * the board before staff have served it.
+   */
+  async function handlePrintReceipt(order: Order) {
+    if (printingId === order.id) return;
+    setPrintingId(order.id);
+    try {
+      let printable = order;
+      let inventory: { outOfStock?: string[]; lowStock?: string[] } | null = null;
+
+      if (isReportedOrder(order.status)) {
+        const res = await fetch("/api/dashboard/orders", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.id, status: "REPORTED" }),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data?.order) {
+          toast.error(data?.error || "Could not save this order to Reports.");
+          return;
+        }
+        const next = data.order as Order;
+        inventory = data.inventory ?? null;
+        setOrders((prev) => prev.map((o) => (o.id === order.id ? next : o)));
+        printable = next;
+      }
+
+      await printOrderReceipt(printable, restaurantInfo ?? undefined);
+
+      if (inventory) {
+        const out: string[] = inventory.outOfStock ?? [];
+        const low: string[] = inventory.lowStock ?? [];
+        if (out.length) toast.error(`Out of stock: ${out.join(", ")}`);
+        else if (low.length) toast.info(`Low stock: ${low.join(", ")}`);
+      }
+    } catch {
+      toast.error("Could not print this receipt.");
+    } finally {
+      setPrintingId(null);
+    }
   }
 
   const todayOrders = useMemo(() => {
@@ -277,13 +320,21 @@ export function OrdersBoard() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ orderId: order.id, status: "REPORTED" }),
       });
-      if (res.ok) {
-        const data = await res.json();
-        setOrders((prev) =>
-          prev.map((o) => (o.id === order.id ? (data.order as Order) : o))
-        );
-        toast.success(`Order ${order.orderNumber} saved to Reports.`);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.order) {
+        toast.error(data?.error || "Could not save this order to Reports.");
+        return;
       }
+      const next = data.order as Order;
+      setOrders((prev) => prev.map((o) => (o.id === order.id ? next : o)));
+      toast.success(`Order ${next.orderNumber} saved to Reports.`);
+
+      const out: string[] = data.inventory?.outOfStock ?? [];
+      const low: string[] = data.inventory?.lowStock ?? [];
+      if (out.length) toast.error(`Out of stock: ${out.join(", ")}`);
+      else if (low.length) toast.info(`Low stock: ${low.join(", ")}`);
+    } catch {
+      toast.error("Could not save this order to Reports.");
     } finally {
       setUpdatingId(null);
     }
@@ -960,11 +1011,12 @@ export function OrdersBoard() {
                               </button>
                               <button
                                 type="button"
-                                onClick={() => handlePrintReceipt(order)}
-                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)]"
+                                disabled={printingId === order.id}
+                                onClick={() => void handlePrintReceipt(order)}
+                                className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)] disabled:opacity-50"
                               >
                                 <Printer className="h-3 w-3" />
-                                Print Receipt
+                                {printingId === order.id ? "Saving & printing…" : "Print Receipt"}
                               </button>
                               <button
                                 type="button"
@@ -983,11 +1035,12 @@ export function OrdersBoard() {
                             order.status === "READY") && (
                             <button
                               type="button"
-                              onClick={() => handlePrintReceipt(order)}
-                              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)]"
+                              disabled={printingId === order.id}
+                              onClick={() => void handlePrintReceipt(order)}
+                              className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--bg-soft)] py-2 text-[10px] font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)] disabled:opacity-50"
                             >
                               <Printer className="h-3 w-3" />
-                              Print Receipt
+                              {printingId === order.id ? "Saving & printing…" : "Print Receipt"}
                             </button>
                           )}
                           {order.status !== "COMPLETED" && order.status !== "REPORTED" && (

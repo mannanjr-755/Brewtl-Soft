@@ -15,7 +15,7 @@ async function main() {
   await prisma.user.deleteMany();
   await prisma.restaurant.deleteMany();
 
-  const passwordHash = await bcrypt.hash("password123", 10);
+  const passwordHash = await bcrypt.hash("password 123", 10);
 
   const brewtl = await prisma.restaurant.create({
     data: {
@@ -50,6 +50,7 @@ async function main() {
       email: "admin@brewtl.com",
       passwordHash,
       name: "Admin",
+      role: "ADMIN",
       restaurantId: brewtl.id,
     },
   });
@@ -257,7 +258,7 @@ async function main() {
 
   console.log("Done!");
   console.log("Customer menu: /r/brewtl/t/12");
-  console.log("Admin login: admin@brewtl.com / password123");
+  console.log("Admin login: admin@brewtl.com / password 123");
 }
 
 main()

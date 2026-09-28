@@ -80,9 +80,7 @@ export function ReportsManager() {
     } catch {
       /* ignore */
     }
-    setUnlocked(false);
     return () => {
-      setUnlocked(false);
       try {
         sessionStorage.removeItem("crm-reports-unlocked");
       } catch {

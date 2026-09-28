@@ -14,7 +14,7 @@ The app lives in `frontend/` (Next.js UI + API routes). There is no separate bac
 
 Opens at **http://localhost:3001**
 
-Login: `admin@brewtl.com` / `password123`
+Login: `admin@brewtl.com` / `password 123`
 
 ## With customer site
 

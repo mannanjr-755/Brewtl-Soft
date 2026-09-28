@@ -52,7 +52,7 @@ function MenuItemImage({ src, alt }: { src: string | null; alt: string }) {
   );
 }
 
-/** Dedicated walking-customer POS — Save goes to Reports; Print prints receipt. */
+/** Dedicated walking-customer POS — "Print Receipt" saves to Reports, then prints. */
 export function WalkingCustomerManager() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,7 +152,13 @@ export function WalkingCustomerManager() {
     setCart((prev) => prev.filter((line) => line.item.id !== itemId));
   }
 
-  /** Create walking order as REPORTED (Reports only — not Kitchen). */
+  /**
+   * Create the walking-customer order straight into Reports.
+   *
+   * The server records it as REPORTED in one transaction and deducts stock, so
+   * by the time this resolves the sale is already safe in Reports and the
+   * printed receipt carries the real order number.
+   */
   async function createReportsOrder() {
     const res = await fetch("/api/dashboard/orders", {
       method: "POST",
@@ -166,39 +172,43 @@ export function WalkingCustomerManager() {
         })),
       }),
     });
-    const data = await res.json();
+    const data = await res.json().catch(() => null);
     if (!res.ok) {
-      throw new Error(data.error || "Could not create walking-customer order.");
+      throw new Error(
+        data?.error || "Could not save this order. Nothing was printed."
+      );
     }
     return data as {
       order: {
+        id: string;
         orderNumber: string;
         customerName: string;
-        orderType?: string;
+        orderType?: string | null;
         total: number;
         createdAt: string;
         status: string;
-        items: { itemName: string; quantity: number; unitPrice: number; subtotal: number }[];
+        specialRequest?: string | null;
+        items: {
+          itemName: string;
+          quantity: number;
+          unitPrice: number;
+          subtotal: number;
+        }[];
         table?: { tableNumber: number } | null;
       };
+      savedToReports: boolean;
+      inventory?: { updated: boolean; outOfStock: string[]; lowStock: string[] };
       restaurant: ReceiptRestaurant;
     };
   }
 
-  async function saveOrderToReports() {
-    if (cart.length === 0 || checkoutBusy) return;
-    setCheckoutBusy(true);
-    try {
-      const data = await createReportsOrder();
-      setCart([]);
-      toast.success(`Order ${data.order.orderNumber} saved to Reports.`);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Could not create walking-customer order.");
-    } finally {
-      setCheckoutBusy(false);
-    }
-  }
-
+  /**
+   * "Print Receipt" = save to Reports first, then print.
+   *
+   * The cart is only cleared after the order is safely recorded, so a failed
+   * save never loses the sale. Low/out-of-stock warnings are surfaced right
+   * after printing so staff can restock immediately.
+   */
   async function printCartReceipt() {
     if (cart.length === 0 || checkoutBusy) return;
     setCheckoutBusy(true);
@@ -219,28 +229,42 @@ export function WalkingCustomerManager() {
         }
       }
 
-      const items = cart.map((line) => ({
-        itemName: line.item.name,
-        quantity: line.quantity,
-        unitPrice: line.item.price,
-        subtotal: line.item.price * line.quantity,
-      }));
+      // 1. Save the order to Reports (and deduct stock) before anything prints.
+      const data = await createReportsOrder();
+      setCart([]);
 
-      printOrderReceipt(
+      // 2. Print the saved order so the paper trail matches the books.
+      await printOrderReceipt(
         {
-          orderNumber: `WC-${Date.now().toString(36).toUpperCase()}`,
-          customerName: "Walking Customer",
-          orderType: "TAKE_AWAY",
-          total: cartTotal,
-          createdAt: new Date(),
-          items,
-          table: null,
+          orderNumber: data.order.orderNumber,
+          customerName: data.order.customerName,
+          orderType: data.order.orderType,
+          total: data.order.total,
+          createdAt: data.order.createdAt,
+          specialRequest: data.order.specialRequest,
+          items: data.order.items,
+          table: data.order.table ?? null,
         },
-        restaurant ?? undefined
+        data.restaurant ?? restaurant ?? undefined
       );
-      toast.success("Receipt sent to printer.");
-    } catch {
-      toast.error("Could not print walking-customer receipt.");
+
+      toast.success(
+        `Order ${data.order.orderNumber} saved to Reports and sent to the printer.`
+      );
+
+      const out = data.inventory?.outOfStock ?? [];
+      const low = data.inventory?.lowStock ?? [];
+      if (out.length) {
+        toast.error(`Out of stock: ${out.join(", ")}`);
+      } else if (low.length) {
+        toast.info(`Low stock: ${low.join(", ")}`);
+      }
+    } catch (e) {
+      toast.error(
+        e instanceof Error
+          ? e.message
+          : "Could not save or print this order. The cart has been kept."
+      );
     } finally {
       setCheckoutBusy(false);
     }
@@ -255,7 +279,8 @@ export function WalkingCustomerManager() {
       <div>
         <h1 className="font-display text-2xl text-[var(--text)] sm:text-3xl">Walking Customer</h1>
         <p className="mt-1 text-sm text-[var(--text-muted)]">
-          Search the menu, add items to Current Order, then Save to Reports or Print Receipt.
+          Search the menu, add items to Current Order, then print the receipt. Every
+          printed order is saved to Reports and stock is updated automatically.
         </p>
       </div>
 
@@ -419,20 +444,16 @@ export function WalkingCustomerManager() {
             <button
               type="button"
               disabled={cart.length === 0 || checkoutBusy}
-              onClick={() => void saveOrderToReports()}
-              className="w-full rounded-xl bg-[var(--gold)] py-3 text-sm font-bold uppercase tracking-wide text-black transition hover:brightness-110 disabled:opacity-50"
-            >
-              {checkoutBusy ? "Saving…" : "Save"}
-            </button>
-            <button
-              type="button"
-              disabled={cart.length === 0 || checkoutBusy}
               onClick={() => void printCartReceipt()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg-soft)] py-3 text-sm font-bold uppercase tracking-wide text-[var(--text)] transition hover:border-[var(--gold)]/40 hover:text-[var(--gold-bright)] disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--gold)] py-3.5 text-sm font-bold uppercase tracking-wide text-black transition hover:brightness-110 disabled:opacity-50"
             >
               <Printer className="h-4 w-4" />
-              {checkoutBusy ? "Printing…" : "Print Receipt"}
+              {checkoutBusy ? "Saving & printing…" : "Print Receipt"}
             </button>
+            <p className="text-center text-[11px] leading-relaxed text-[var(--text-dim)]">
+              Saves this order to Reports and updates stock automatically, then prints
+              the receipt.
+            </p>
           </div>
         </aside>
       </div>

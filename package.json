@@ -10,6 +10,8 @@
     "build": "npm run build --workspace=frontend",
     "start": "npm run start --workspace=frontend",
     "lint": "npm run lint --workspace=frontend",
+    "typecheck": "npm run typecheck --workspace=frontend",
+    "verify": "npm run verify --workspace=frontend",
     "db:push": "npm run db:push --workspace=frontend",
     "db:seed": "npm run db:seed --workspace=frontend",
     "db:studio": "npm run db:studio --workspace=frontend",

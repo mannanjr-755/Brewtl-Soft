@@ -7,6 +7,8 @@
     "build": "prisma generate && next build",
     "start": "next start -p 3001",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "verify": "tsx scripts/verify-inventory.ts",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",

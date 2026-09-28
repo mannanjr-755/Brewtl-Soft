@@ -41,7 +41,7 @@ export default function LoginPage() {
 
           <p className="mt-6 rounded-xl border border-[var(--gold)]/20 bg-[var(--gold)]/5 p-3 text-xs leading-relaxed text-[var(--text-muted)]">
             Demo: <span className="text-[var(--gold-bright)]">admin@brewtl.com</span> /{" "}
-            <span className="text-[var(--gold-bright)]">password123</span>
+            <span className="text-[var(--gold-bright)]">password 123</span>
           </p>
         </div>
       </div>

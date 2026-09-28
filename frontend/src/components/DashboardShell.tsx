@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { auth, signOut } from "@/lib/auth";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TableRequestsPanel } from "@/components/TableRequestsPanel";
@@ -63,7 +64,7 @@ export async function DashboardShell({
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-[var(--border)] bg-[var(--bg-elevated)]/95 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-[var(--bg-elevated)]/80">
           <div className="flex min-w-0 items-center gap-2 lg:invisible lg:w-0 lg:overflow-hidden">
-            <img
+            <Image
               src="/logo.png"
               alt="BREWTL"
               width={32}

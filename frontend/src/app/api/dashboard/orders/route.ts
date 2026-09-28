@@ -1,13 +1,24 @@
+import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { generateOrderNumber } from "@/lib/orders";
+import { createOrderWithRetry } from "@/lib/orders";
 import { requireStaff } from "@/lib/session";
 import { nextStatus, ORDER_STATUSES } from "@/lib/utils";
+import {
+  countsTowardsStock,
+  releaseOrderInventory,
+  syncOrderInventory,
+  type InventoryLine,
+} from "@/lib/inventory";
 
 /**
  * Create a walking-customer order from existing menu item(s).
  * Supports single item `{ menuItemId, quantity }` or cart `{ items: [{ menuItemId, quantity }] }`.
  * Uses existing order/item pricing fields — does not alter table-based order flow.
+ *
+ * `saveToReports: true` (used by "Print Receipt") creates the order directly in
+ * Reports and deducts stock automatically inside the same transaction, so the
+ * printed receipt and the recorded sale can never disagree.
  */
 export async function POST(request: Request) {
   const session = await requireStaff();
@@ -50,7 +61,14 @@ export async function POST(request: Request) {
 
     const restaurant = await prisma.restaurant.findUnique({
       where: { id: session.user.restaurantId },
-      select: { id: true, name: true, phone: true, address: true, slug: true },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        slug: true,
+        logo: true,
+      },
     });
     if (!restaurant) {
       return NextResponse.json({ error: "Restaurant not found" }, { status: 404 });
@@ -93,34 +111,66 @@ export async function POST(request: Request) {
       );
     }
 
-    const orderNumber = await generateOrderNumber(restaurant.id, restaurant.slug);
     // saveToReports: create as REPORTED so it appears in Reports only (not Kitchen).
     const saveToReports = body.saveToReports === true;
+    const now = new Date();
 
-    const order = await prisma.order.create({
-      data: {
+    // Order + inventory movement commit together — a printed receipt always
+    // matches the recorded sale and the stock levels.
+    const { order, inventory } = await prisma.$transaction(async (tx) => {
+      const created = await createOrderWithRetry(tx, {
         restaurantId: restaurant.id,
-        tableId: table.id,
-        orderNumber,
-        customerName: "Walking Customer",
-        orderType: "TAKE_AWAY",
-        status: saveToReports ? "REPORTED" : "NEW",
-        total,
-        items: {
-          create: orderItems,
-        },
-      },
-      include: { items: true, table: true },
+        slug: restaurant.slug,
+        build: (orderNumber) => ({
+          data: {
+            restaurantId: restaurant.id,
+            tableId: table.id,
+            orderNumber,
+            customerName: "Walking Customer",
+            orderType: "TAKE_AWAY",
+            status: saveToReports ? "REPORTED" : "NEW",
+            total,
+            items: {
+              create: orderItems,
+            },
+          },
+        }),
+      });
+
+      const stockResult = saveToReports
+        ? await syncOrderInventory(tx, {
+            restaurantId: restaurant.id,
+            previousItems: [],
+            nextItems: created.items as InventoryLine[],
+            wasCounted: false,
+            isCounted: true,
+          })
+        : {
+            changed: false,
+            changes: [],
+            outOfStock: [],
+            lowStock: [],
+          };
+
+      return { order: created, inventory: stockResult };
     });
 
     return NextResponse.json(
       {
         order,
+        savedToReports: saveToReports,
+        inventory: {
+          updated: inventory.changed,
+          outOfStock: inventory.outOfStock,
+          lowStock: inventory.lowStock,
+        },
         restaurant: {
           name: restaurant.name,
           phone: restaurant.phone,
           address: restaurant.address,
+          logo: restaurant.logo,
         },
+        serverTime: now.toISOString(),
       },
       { status: 201 }
     );
@@ -160,12 +210,19 @@ export async function GET(request: Request) {
   return NextResponse.json({ orders, serverTime: new Date().toISOString() });
 }
 
-/** Update order status / customer fields / add or remove items */
+/**
+ * Update order status / customer fields / add, remove or resize items.
+ *
+ * Every mutation also reconciles stock: an order consumes stock while it sits
+ * in Reports, and editing a counted order applies the exact difference.
+ */
 export async function PATCH(request: Request) {
   const session = await requireStaff();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const restaurantId = session.user.restaurantId;
 
   try {
     const body = await request.json();
@@ -198,96 +255,20 @@ export async function PATCH(request: Request) {
     }
 
     const order = await prisma.order.findFirst({
-      where: { id: orderId, restaurantId: session.user.restaurantId },
+      where: { id: orderId, restaurantId },
       include: { items: true },
     });
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    // --- Add a menu item to the order ---
-    if (addItem) {
-      const menuItem = await prisma.menuItem.findFirst({
-        where: { id: addItem.menuItemId, restaurantId: session.user.restaurantId },
-      });
-      if (!menuItem) {
-        return NextResponse.json({ error: "Menu item not found" }, { status: 404 });
-      }
-      const qty = Math.max(1, Math.floor(addItem.quantity));
-      const existing = order.items.find((i) => i.menuItemId === menuItem.id);
-      if (existing) {
-        const newQty = existing.quantity + qty;
-        await prisma.orderItem.update({
-          where: { id: existing.id },
-          data: { quantity: newQty, subtotal: newQty * existing.unitPrice },
-        });
-      } else {
-        await prisma.orderItem.create({
-          data: {
-            orderId: order.id,
-            menuItemId: menuItem.id,
-            itemName: menuItem.name,
-            quantity: qty,
-            unitPrice: menuItem.price,
-            subtotal: qty * menuItem.price,
-          },
-        });
-      }
+    const previousLines: InventoryLine[] = order.items.map((i) => ({
+      menuItemId: i.menuItemId,
+      quantity: i.quantity,
+    }));
+    const wasCounted = countsTowardsStock(order.status);
 
-      // Recalculate total
-      const items = await prisma.orderItem.findMany({ where: { orderId: order.id } });
-      const total = items.reduce((sum, i) => sum + i.subtotal, 0);
-      const updatedOrder = await prisma.order.update({
-        where: { id: order.id },
-        data: { total },
-        include: { items: true, table: true },
-      });
-      return NextResponse.json({ order: updatedOrder });
-    }
-
-    // --- Remove an item from the order ---
-    if (removeItemId) {
-      const item = order.items.find((i) => i.id === removeItemId);
-      if (!item) {
-        return NextResponse.json({ error: "Order item not found" }, { status: 404 });
-      }
-      await prisma.orderItem.delete({ where: { id: removeItemId } });
-
-      const items = await prisma.orderItem.findMany({ where: { orderId: order.id } });
-      const total = items.reduce((sum, i) => sum + i.subtotal, 0);
-      const updatedOrder = await prisma.order.update({
-        where: { id: order.id },
-        data: { total },
-        include: { items: true, table: true },
-      });
-      return NextResponse.json({ order: updatedOrder });
-    }
-
-    // --- Update item quantity ---
-    if (updateItemQty) {
-      const item = order.items.find((i) => i.id === updateItemQty.orderItemId);
-      if (!item) {
-        return NextResponse.json({ error: "Order item not found" }, { status: 404 });
-      }
-      const newQty = Math.max(1, Math.floor(updateItemQty.quantity));
-      await prisma.orderItem.update({
-        where: { id: item.id },
-        data: { quantity: newQty, subtotal: newQty * item.unitPrice },
-      });
-
-      const items = await prisma.orderItem.findMany({ where: { orderId: order.id } });
-      const total = items.reduce((sum, i) => sum + i.subtotal, 0);
-      const updatedOrder = await prisma.order.update({
-        where: { id: order.id },
-        data: { total },
-        include: { items: true, table: true },
-      });
-      return NextResponse.json({ order: updatedOrder });
-    }
-
-    // --- Status / customer field edits ---
-    const data: Record<string, unknown> = {};
-
+    // --- Resolve the target status, if this is a status change ---
     let newStatus = status;
     if (advance && !status) {
       const next = nextStatus(order.status);
@@ -296,30 +277,116 @@ export async function PATCH(request: Request) {
       }
       newStatus = next;
     }
-
-    if (newStatus) {
-      if (!ORDER_STATUSES.includes(newStatus as (typeof ORDER_STATUSES)[number])) {
-        return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-      }
-      data.status = newStatus;
+    if (newStatus && !ORDER_STATUSES.includes(newStatus as (typeof ORDER_STATUSES)[number])) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    if (customerName !== undefined) data.customerName = customerName;
-    if (customerPhone !== undefined) data.customerPhone = customerPhone || null;
-    if (customerEmail !== undefined) data.customerEmail = customerEmail || null;
-    if (specialRequest !== undefined) data.specialRequest = specialRequest || null;
+    const hasItemMutation = Boolean(addItem || removeItemId || updateItemQty);
 
-    if (Object.keys(data).length === 0) {
+    // --- Validate item mutations before opening the transaction ---
+    if (addItem) {
+      const menuItem = await prisma.menuItem.findFirst({
+        where: { id: addItem.menuItemId, restaurantId },
+        select: { id: true },
+      });
+      if (!menuItem) {
+        return NextResponse.json({ error: "Menu item not found" }, { status: 404 });
+      }
+    }
+    if (removeItemId && !order.items.some((i) => i.id === removeItemId)) {
+      return NextResponse.json({ error: "Order item not found" }, { status: 404 });
+    }
+    if (updateItemQty && !order.items.some((i) => i.id === updateItemQty.orderItemId)) {
+      return NextResponse.json({ error: "Order item not found" }, { status: 404 });
+    }
+
+    const orderUpdate: Prisma.OrderUpdateInput = {
+      ...(newStatus ? { status: newStatus } : {}),
+      ...(customerName !== undefined ? { customerName } : {}),
+      ...(customerPhone !== undefined ? { customerPhone: customerPhone || null } : {}),
+      ...(customerEmail !== undefined ? { customerEmail: customerEmail || null } : {}),
+      ...(specialRequest !== undefined ? { specialRequest: specialRequest || null } : {}),
+    };
+
+    if (!hasItemMutation && Object.keys(orderUpdate).length === 0) {
       return NextResponse.json({ error: "No fields to update" }, { status: 400 });
     }
 
-    const updated = await prisma.order.update({
-      where: { id: order.id },
-      data,
-      include: { items: true, table: true },
+    const result = await prisma.$transaction(async (tx) => {
+      // --- Add a menu item to the order ---
+      if (addItem) {
+        const menuItem = await tx.menuItem.findUniqueOrThrow({
+          where: { id: addItem.menuItemId },
+        });
+        const qty = Math.max(1, Math.floor(addItem.quantity));
+        const existing = order.items.find((i) => i.menuItemId === menuItem.id);
+        if (existing) {
+          const newQty = existing.quantity + qty;
+          await tx.orderItem.update({
+            where: { id: existing.id },
+            data: { quantity: newQty, subtotal: newQty * existing.unitPrice },
+          });
+        } else {
+          await tx.orderItem.create({
+            data: {
+              orderId: order.id,
+              menuItemId: menuItem.id,
+              itemName: menuItem.name,
+              quantity: qty,
+              unitPrice: menuItem.price,
+              subtotal: qty * menuItem.price,
+            },
+          });
+        }
+      }
+
+      // --- Remove an item from the order ---
+      if (removeItemId) {
+        await tx.orderItem.delete({ where: { id: removeItemId } });
+      }
+
+      // --- Update item quantity ---
+      if (updateItemQty) {
+        const item = order.items.find((i) => i.id === updateItemQty.orderItemId)!;
+        const newQty = Math.max(1, Math.floor(updateItemQty.quantity));
+        await tx.orderItem.update({
+          where: { id: item.id },
+          data: { quantity: newQty, subtotal: newQty * item.unitPrice },
+        });
+      }
+
+      // --- Recalculate the total from the stored line items ---
+      const items = await tx.orderItem.findMany({ where: { orderId: order.id } });
+      const total = items.reduce((sum, i) => sum + i.subtotal, 0);
+
+      const updatedOrder = await tx.order.update({
+        where: { id: order.id },
+        data: { ...orderUpdate, total },
+        include: { items: true, table: true },
+      });
+
+      // A status flip is what puts an order into (or out of) Reports, so the
+      // stock footprint is always re-derived — never accumulated.
+      const inventory = await syncOrderInventory(tx, {
+        restaurantId,
+        previousItems: previousLines,
+        nextItems: items.map((i) => ({ menuItemId: i.menuItemId, quantity: i.quantity })),
+        wasCounted,
+        isCounted: countsTowardsStock(updatedOrder.status),
+      });
+
+      return { order: updatedOrder, inventory };
     });
 
-    return NextResponse.json({ order: updated });
+    return NextResponse.json({
+      order: result.order,
+      savedToReports: countsTowardsStock(result.order.status),
+      inventory: {
+        updated: result.inventory.changed,
+        outOfStock: result.inventory.outOfStock,
+        lowStock: result.inventory.lowStock,
+      },
+    });
   } catch (error) {
     console.error("Update order error:", error);
     return NextResponse.json({ error: "Failed to update order" }, { status: 500 });
@@ -339,17 +406,40 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "id required" }, { status: 400 });
   }
 
+  const restaurantId = session.user.restaurantId;
+
   const order = await prisma.order.findFirst({
     where: {
       id,
-      restaurantId: session.user.restaurantId,
+      restaurantId,
     },
+    include: { items: true },
   });
 
   if (!order) {
     return NextResponse.json({ error: "Order not found" }, { status: 404 });
   }
 
-  await prisma.order.delete({ where: { id: order.id } });
-  return NextResponse.json({ ok: true });
+  // Deleting a counted order must hand its stock back, otherwise inventory
+  // would drift further away from reality with every correction.
+  const inventory = await prisma.$transaction(async (tx) => {
+    const result = countsTowardsStock(order.status)
+      ? await releaseOrderInventory(tx, {
+          restaurantId,
+          items: order.items.map((i) => ({ menuItemId: i.menuItemId, quantity: i.quantity })),
+        })
+      : { changed: false, changes: [], outOfStock: [], lowStock: [] };
+
+    await tx.order.delete({ where: { id: order.id } });
+    return result;
+  });
+
+  return NextResponse.json({
+    ok: true,
+    inventory: {
+      updated: inventory.changed,
+      outOfStock: inventory.outOfStock,
+      lowStock: inventory.lowStock,
+    },
+  });
 }
