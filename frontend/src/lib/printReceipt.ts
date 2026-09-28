@@ -428,11 +428,13 @@ export function printOrderReceipt(
     const frame = document.createElement("iframe");
     frame.setAttribute("aria-hidden", "true");
     frame.setAttribute("title", "receipt");
+    // Keep the frame off-screen but fully laid out: a collapsed or
+    // visibility:hidden frame can make the browser print a blank sheet.
     frame.style.position = "fixed";
-    frame.style.right = "0";
-    frame.style.bottom = "0";
+    frame.style.left = "-10000px";
+    frame.style.top = "0";
     frame.style.width = "80mm";
-    frame.style.height = "0";
+    frame.style.height = "100vh";
     frame.style.border = "0";
     frame.style.visibility = "hidden";
     frame.style.pointerEvents = "none";
@@ -471,15 +473,18 @@ export function printOrderReceipt(
     doc.write(html);
     doc.close();
 
+    let printed = false;
     const runPrint = () => {
-      if (settled) return;
-      settled = true;
+      if (printed) return;
+      printed = true;
       try {
         frame.contentWindow?.focus();
         frame.contentWindow?.print();
       } catch {
         /* printing is best-effort */
       }
+      // finish() owns the single exit path, so the promise always resolves
+      // and the frame is always removed.
       finish();
     };
 
