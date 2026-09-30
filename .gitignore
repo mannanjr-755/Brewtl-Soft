@@ -36,14 +36,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — keep example templates only
+.env
+.env.*
 !.env.example
+!frontend/.env.example
 
 # local database
 /frontend/prisma/*.db
 /frontend/prisma/*.db-journal
 .vercel
+frontend/.vercel
 
 # typescript
 *.tsbuildinfo
@@ -52,6 +55,3 @@ next-env.d.ts
 # desktop Electron packaging
 /desktop/node_modules/
 /desktop/dist/
-
-.vercel
-.env*
