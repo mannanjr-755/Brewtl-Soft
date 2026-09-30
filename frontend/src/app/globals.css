@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+:root {
+  --font-dm-sans: "DM Sans";
+  --font-playfair: "Playfair Display";
+}
+
+/* Brewtl brand palette from logo asset (deep ink #101820 + warm barley gold) */
+:root,
+[data-theme="light"] {
+  --bg: #f4f0e9;
+  --bg-elevated: #faf8f3;
+  --bg-card: #ffffff;
+  --bg-soft: #ece6da;
+  --bg-sidebar: #efeae0;
+  --border: #e0d8c8;
+  --border-strong: #c8bda6;
+  --gold: #a8823b;
+  --gold-bright: #bf9b52;
+  --gold-dim: #86692c;
+  --text: #1d2227;
+  --text-muted: #5e5a52;
+  --text-dim: #8a8478;
+  --danger: #ef4444;
+  --orange: #f97316;
+  --success: #16a34a;
+  --info: #2563eb;
+  --purple: #9333ea;
+  --shadow: 0 1px 3px rgba(44, 33, 30, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #101820;
+  --bg-elevated: #151e28;
+  --bg-card: #1a2530;
+  --bg-soft: #1f2b37;
+  --bg-sidebar: #0d141b;
+  --border: #2a3642;
+  --border-strong: #3d4b58;
+  --gold: #c6a15b;
+  --gold-bright: #ddbe7e;
+  --gold-dim: #9a7c3f;
+  --text: #f2ede3;
+  --text-muted: #b9b2a5;
+  --text-dim: #8a8478;
+  --danger: #ef4444;
+  --orange: #f97316;
+  --success: #22c55e;
+  --info: #3b82f6;
+  --purple: #a855f7;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-playfair), ui-serif, Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  min-height: 100%;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dim);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.45s ease-out both;
+}
+
+@keyframes pulse-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(198, 161, 91, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(198, 161, 91, 0);
+  }
+}
+
+.pulse-gold {
+  animation: pulse-gold 2s infinite;
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 45%, var(--gold-dim) 100%);
+}
+
+.gold-text {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Shared surface helpers for theme-aware UI */
+.surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.surface-elevated {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.input-theme {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.input-theme::placeholder {
+  color: var(--text-dim);
+}
+
+.input-theme:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+/* Soft overrides for pages still using legacy dark hex utilities */
+[data-theme="light"] .bg-black,
+[data-theme="light"] .bg-\[\#101820\],
+[data-theme="light"] .bg-\[\#151e28\],
+[data-theme="light"] .bg-\[\#1a2530\] {
+  background-color: var(--bg-card) !important;
+}
+
+[data-theme="light"] .text-white {
+  color: var(--text) !important;
+}
+
+[data-theme="light"] .border-\[\#1a2530\],
+[data-theme="light"] .border-\[\#2e3b47\],
+[data-theme="light"] .border-white\/10 {
+  border-color: var(--border) !important;
+}
+
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-black\/20 {
+  background-color: var(--bg-soft) !important;
+}
+
+[data-theme="light"] .text-\[\#a39b8c\],
+[data-theme="light"] .text-\[\#b9b2a5\],
+[data-theme="light"] .text-\[\#8a8478\],
+[data-theme="light"] .text-\[\#aaa\],
+[data-theme="light"] .text-\[\#888\],
+[data-theme="light"] .text-\[\#777\],
+[data-theme="light"] .text-\[\#666\] {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="light"] .text-\[\#f2ede3\] {
+  color: var(--text) !important;
+}
